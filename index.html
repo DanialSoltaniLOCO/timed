@@ -1,0 +1,2709 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>ساعت‌شمار مطالعه</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#23303D">
+<link rel="apple-touch-icon" href="icon-512.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ساعت‌شمار">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F5F1E8;
+  --paper-2:#EDE6D3;
+  --card:#FBF8F1;
+  --ink:#23303D;
+  --ink-soft:#68768A;
+  --ink-faint:#9AA6B4;
+  --line:#DCD3BE;
+  --line-strong:#C7BB9E;
+  --accent:#2B5C6B;
+  --accent-soft:#DCE9EB;
+  --amber:#C08A2E;
+  --rose:#B5586B;
+  --radius:14px;
+  --radius-sm:8px;
+  --font-body:'Vazirmatn', Tahoma, 'Segoe UI', sans-serif;
+  --font-mono:'IBM Plex Mono', ui-monospace, 'Courier New', monospace;
+  --shadow: 0 1px 2px rgba(35,48,61,0.06), 0 4px 14px rgba(35,48,61,0.05);
+}
+:root[data-theme="dark"]{
+  --paper:#171B20;
+  --paper-2:#222932;
+  --card:#1D232A;
+  --ink:#E9EEF3;
+  --ink-soft:#AAB5C1;
+  --ink-faint:#778391;
+  --line:#35404B;
+  --line-strong:#4A5865;
+  --accent:#6FA7B8;
+  --accent-soft:#263E47;
+  --amber:#D5A34A;
+  --rose:#D06C80;
+  --shadow:0 1px 2px rgba(0,0,0,0.25),0 4px 16px rgba(0,0,0,0.18);
+}
+:root[data-theme="dark"] body{
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+}
+:root[data-theme="dark"] #app{
+  background:linear-gradient(180deg, rgba(23,27,32,0.98), rgba(23,27,32,0.99));
+}
+:root[data-theme="dark"] nav.tabbar{
+  background:rgba(29,35,42,0.96);
+}
+:root[data-theme="dark"] input[type=number],
+:root[data-theme="dark"] input[type=text],
+:root[data-theme="dark"] input[type=date],
+:root[data-theme="dark"] input[type=time],
+:root[data-theme="dark"] select{
+  background:#151A1F;
+  color:var(--ink);
+}
+:root[data-theme="dark"] .gridwrap.locked:after{
+  background:rgba(23,27,32,0.78);
+}
+
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:var(--font-body);}
+body{
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-position: -1px -1px;
+  background-attachment: fixed;
+  min-height:100vh;
+}
+#app{max-width:460px;margin:0 auto;min-height:100vh;background:linear-gradient(180deg, rgba(245,241,232,0.97), rgba(245,241,232,0.99));display:flex;flex-direction:column;}
+.topbar{
+  padding:16px 18px 10px;
+  display:flex; align-items:baseline; justify-content:space-between;
+  border-bottom:1px solid var(--line);
+}
+.brand{font-weight:800; font-size:19px; letter-spacing:-0.2px;}
+.brand small{display:block; font-weight:500; font-size:11px; color:var(--ink-soft); margin-top:2px; font-family:var(--font-mono); letter-spacing:0.3px;}
+.views{flex:1; overflow-y:auto; padding:14px 14px 100px; -webkit-overflow-scrolling:touch;}
+.view{display:none;}
+.view.active{display:block; animation:fadein .18s ease;}
+@keyframes fadein{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+.card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:14px; margin-bottom:12px; box-shadow:var(--shadow);}
+.card h3{margin:0 0 10px; font-size:13px; font-weight:700; color:var(--ink-soft); letter-spacing:0.2px;}
+.row{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+.muted{color:var(--ink-soft);}
+.mono{font-family:var(--font-mono);}
+
+/* bottom nav */
+nav.tabbar{
+  position:fixed; bottom:0; right:50%; transform:translateX(50%);
+  width:100%; max-width:460px; background:rgba(251,248,241,0.96);
+  backdrop-filter:blur(6px);
+  border-top:1px solid var(--line);
+  display:flex; padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+  z-index:50;
+}
+nav.tabbar button{
+  flex:1; background:none; border:none; padding:8px 1px 6px; color:var(--ink-faint);
+  font-family:var(--font-body); font-size:9.5px; font-weight:600; display:flex; flex-direction:column; align-items:center; gap:3px;
+  cursor:pointer; border-radius:10px;
+}
+nav.tabbar button.active{color:var(--accent); background:var(--accent-soft);}
+nav.tabbar svg{width:18px; height:18px;}
+
+/* date nav */
+.datenav{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;}
+.datenav .navbtn{background:var(--card); border:1px solid var(--line); border-radius:10px; width:36px; height:36px; display:flex; align-items:center; justify-content:center; cursor:pointer;}
+.datenav .center{text-align:center;}
+.datenav .center .d1{font-weight:800; font-size:15px;}
+.datenav .center .d2{font-size:11px; color:var(--ink-soft); font-family:var(--font-mono);}
+.todaybtn{font-size:10px; color:var(--accent); font-weight:700; background:none; border:none; cursor:pointer; padding:2px 0;}
+
+/* activity chips */
+.chips{display:flex; gap:7px; overflow-x:auto; padding:2px 2px 8px; -webkit-overflow-scrolling:touch;}
+.chip{
+  display:flex; align-items:center; gap:6px; flex-shrink:0; padding:7px 12px; border-radius:20px;
+  border:1.5px solid var(--line); background:var(--card); font-size:12.5px; font-weight:600; cursor:pointer; white-space:nowrap;
+}
+.chip .dot{width:9px; height:9px; border-radius:50%; flex-shrink:0;}
+.chip.selected{border-color:var(--ink); box-shadow:0 0 0 2px rgba(35,48,61,0.08);}
+.chip.eraser{border-style:dashed;}
+
+/* grid */
+.gridwrap{border:1px solid var(--line); border-radius:var(--radius-sm); overflow:hidden; background:var(--card); position:relative; transition:opacity .15s;}
+.gridwrap.locked{opacity:0.6;}
+.gridwrap.locked:after{
+  content:"🔒 جدول قفل است — برای رنگ‌آمیزی، اول قفل رو باز کن";
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center;
+  padding:14px; font-size:12px; font-weight:700; color:var(--ink); background:rgba(245,241,232,0.75);
+}
+.hourrow{display:flex; align-items:center; gap:3px; padding:2px 6px; border-bottom:1px solid var(--line);}
+.hourrow:last-child{border-bottom:none;}
+.hourrow:nth-child(4n+1){background:rgba(43,92,107,0.035);}
+.hlabel{width:34px; flex-shrink:0; font-family:var(--font-mono); font-size:10px; color:var(--ink-faint); text-align:center;}
+.qcell{flex:1; height:22px; border-radius:4px; background:var(--paper-2); border:1px solid var(--line); cursor:pointer;}
+.qcell.filled{border-color:transparent;}
+
+.draglabel{display:flex; align-items:center; gap:8px; font-size:12px; color:var(--ink-soft); margin-bottom:10px; justify-content:flex-end;}
+.switch{width:34px; height:19px; border-radius:20px; background:var(--line-strong); position:relative; cursor:pointer; flex-shrink:0;}
+.switch .knob{position:absolute; top:2px; right:2px; width:15px; height:15px; border-radius:50%; background:#fff; transition:.15s;}
+.switch.on{background:var(--accent);}
+.switch.on .knob{right:17px;}
+
+.question-card{border-right:3px solid var(--accent);padding:12px 13px;}
+.question-total{min-width:54px;height:42px;border-radius:11px;background:var(--paper-2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:22px;font-weight:800;transition:.15s;}
+.question-total.hit{background:#DDEBDD;color:#2E6B3A;border-color:#A9C9AE;}
+.question-progress{height:7px;background:var(--paper-2);border-radius:7px;overflow:hidden;margin-bottom:10px;}
+.question-progress-fill{height:100%;width:0;background:var(--accent);border-radius:7px;transition:.15s;}
+.question-progress-fill.hit{background:#4F8A58;}
+.question-checks{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;}
+.qcheck{aspect-ratio:1;border:1px solid var(--line);background:var(--paper-2);border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;transition:.1s;}
+.qcheck.checked{background:var(--accent);border-color:var(--accent);color:#fff;}
+.qcheck.checked.hit{background:#4F8A58;border-color:#4F8A58;}
+.qcheck:active{transform:scale(.92);}
+
+/* stat strip */
+.statgrid{display:flex; gap:8px;}
+.stat{flex:1; background:var(--card); border:1px solid var(--line); border-radius:var(--radius-sm); padding:10px; text-align:center;}
+.stat .v{font-family:var(--font-mono); font-weight:600; font-size:15px;}
+.stat .l{font-size:10.5px; color:var(--ink-soft); margin-top:2px;}
+
+/* timer */
+.timerBig{
+  background:var(--ink); color:var(--paper); border-radius:18px; padding:26px 18px; text-align:center; margin-bottom:14px;
+  box-shadow:var(--shadow);
+}
+.timerBig .tt{font-family:var(--font-mono); font-size:40px; font-weight:600; letter-spacing:1px; direction:ltr;}
+.timerBig .ta{margin-top:6px; font-size:12px; opacity:0.75;}
+.timerbtns{display:flex; gap:10px; margin-bottom:14px;}
+.tbtn{flex:1; padding:13px; border-radius:12px; border:none; font-family:var(--font-body); font-weight:700; font-size:13.5px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;}
+.tbtn.start{background:var(--accent); color:#fff;}
+.tbtn.pause{background:var(--amber); color:#fff;}
+.tbtn.stop{background:var(--rose); color:#fff;}
+.tbtn[disabled]{opacity:0.4; pointer-events:none;}
+
+textarea{font-family:var(--font-body);font-size:13px;line-height:1.9;border:1px solid var(--line);border-radius:8px;padding:9px 10px;background:var(--card);color:var(--ink);width:100%;resize:vertical;min-height:120px;box-sizing:border-box;}
+:root[data-theme="dark"] textarea{background:#151A1F;color:var(--ink);border-color:var(--line);}
+:root[data-theme="dark"] textarea::placeholder{color:var(--ink-faint);}
+:root[data-theme="dark"] #dailyNoteCard{background:var(--card);border-color:var(--line);}
+.planchapter{display:flex;align-items:center;gap:7px;padding:7px 8px;border:1px solid var(--line);border-radius:8px;margin-top:5px;font-size:11.5px;cursor:pointer;}
+.planchapter.done{background:var(--accent-soft);text-decoration:line-through;opacity:.72;}
+.planchapter input{accent-color:var(--accent);width:16px;height:16px;flex-shrink:0;}
+.plan-status{font-size:10.5px;color:var(--ink-soft);margin-top:7px;line-height:1.8;}
+.report-plan-item{padding:9px 10px;border:1px solid var(--line);border-radius:9px;margin-top:6px;line-height:1.8;font-size:11.5px;}
+.report-plan-item.done{background:var(--accent-soft);text-decoration:line-through;opacity:.75;}
+.report-plan-item.missed{border-right:3px solid var(--rose);}
+.report-plan-item.pending{border-right:3px solid var(--amber);}
+input[type=number], input[type=text], input[type=date], select{
+  font-family:var(--font-body); font-size:13px; border:1px solid var(--line); border-radius:8px; padding:9px 10px; background:#fff; color:var(--ink); width:100%;
+}
+label.flabel{font-size:11.5px; color:var(--ink-soft); font-weight:600; display:block; margin-bottom:4px;}
+.field{margin-bottom:10px;}
+.btn{background:var(--accent); color:#fff; border:none; border-radius:10px; padding:11px; font-family:var(--font-body); font-weight:700; font-size:13px; cursor:pointer; width:100%;}
+.btn.secondary{background:var(--card); color:var(--ink); border:1px solid var(--line);}
+.btn.ghost{background:none; color:var(--rose); border:1px solid var(--rose); }
+.btn[disabled]{opacity:0.4; cursor:default; pointer-events:none;}
+
+/* activities list */
+.actrow{display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--line);}
+.actrow:last-child{border-bottom:none;}
+.swatch{width:22px; height:22px; border-radius:7px; flex-shrink:0; border:1px solid rgba(0,0,0,0.08); cursor:pointer;}
+.actrow .name{flex:1; font-weight:600; font-size:13.5px;}
+.iconbtn{background:none; border:none; cursor:pointer; padding:5px; color:var(--ink-faint);}
+
+/* modal overlay (used by weekly-plan calendar + date-jump calendar) */
+.modal-overlay{position:fixed; inset:0; background:rgba(20,16,8,0.45); z-index:200; display:none; align-items:flex-end; justify-content:center; padding:0;}
+.modal-card{background:var(--card); border-radius:16px 16px 0 0; padding:16px; width:100%; max-width:460px; max-height:85vh; overflow-y:auto; box-shadow:var(--shadow);}
+
+/* weekly plan / date-jump calendar */
+.jcal-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; gap:6px;}
+.jcal-nav{background:var(--paper); border:1px solid var(--line); border-radius:8px; width:34px; height:34px; font-size:16px; color:var(--ink); cursor:pointer; flex-shrink:0;}
+.jcal-sel{border:1px solid var(--line); border-radius:8px; background:var(--paper); color:var(--ink); font-family:var(--font-body); font-size:12px; padding:7px 4px;}
+.jcal-shortcuts{display:flex; gap:6px; margin-bottom:10px;}
+.jcal-shortcuts button{flex:1; padding:9px 4px; font-size:12px;}
+.jcal-dow{display:grid; grid-template-columns:repeat(7,1fr); gap:3px; text-align:center; font-size:10.5px; color:var(--ink-soft); margin-bottom:4px; font-weight:700;}
+.jcal-week{display:grid; grid-template-columns:repeat(7,1fr); gap:3px; border-radius:9px; padding:3px; margin-bottom:3px; cursor:pointer; border:1px solid transparent;}
+.jcal-week:hover{background:var(--accent-soft); border-color:var(--accent);}
+.jcal-week.added{cursor:default; opacity:.55;}
+.jcal-week.added:hover{background:none; border-color:transparent;}
+.jcal-day{padding:8px 2px; text-align:center; font-size:12.5px; border-radius:7px; min-height:18px;}
+.jcal-day.out{color:var(--ink-faint); opacity:.4;}
+.jcal-day.today{background:var(--accent); color:#fff; font-weight:700;}
+.jcal-week.added .jcal-day{background:var(--accent-soft);}
+.jcal-added-badge{grid-column:1/-1; text-align:center; font-size:10px; color:var(--accent); font-weight:700; margin-top:-2px;}
+.jcal-daygrid{display:grid; grid-template-columns:repeat(7,1fr); gap:5px;}
+.jcal-daybtn{padding:10px 2px; border-radius:8px; border:1px solid var(--line); background:var(--paper); color:var(--ink); font-size:13px; cursor:pointer; font-family:var(--font-body);}
+.jcal-daybtn.today{border-color:var(--accent); border-width:2px; font-weight:700;}
+.jcal-daybtn.selected{background:var(--accent); color:#fff; border-color:var(--accent);}
+
+/* report tabs */
+.subtabs{display:flex; gap:6px; margin-bottom:12px;}
+.subtabs button{flex:1; padding:9px; border-radius:10px; border:1px solid var(--line); background:var(--card); font-family:var(--font-body); font-weight:700; font-size:12px; cursor:pointer; color:var(--ink-soft);}
+.subtabs button.active{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+
+.donutwrap{position:relative; width:170px; height:170px; margin:4px auto 12px;}
+.donutcenter{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;}
+.donutcenter .n{font-family:var(--font-mono); font-weight:700; font-size:20px;}
+.donutcenter .l{font-size:10.5px; color:var(--ink-soft); margin-top:2px;}
+
+.legend{display:flex; flex-direction:column; gap:8px;}
+.legrow{display:flex; align-items:center; gap:8px; font-size:12.5px;}
+.legrow .dot{width:10px; height:10px; border-radius:3px; flex-shrink:0;}
+.legrow .lname{flex:1;}
+.legrow .lval{font-family:var(--font-mono); color:var(--ink-soft); font-size:11.5px;}
+.barbg{height:6px; background:var(--paper-2); border-radius:6px; overflow:hidden; margin-top:3px;}
+.barfg{height:100%; border-radius:6px;}
+
+.stackcol-wrap{display:flex; align-items:flex-end; gap:6px; height:150px; padding-top:6px;}
+.stackcol{flex:1; display:flex; flex-direction:column-reverse; height:100%; border-radius:6px 6px 3px 3px; overflow:hidden; background:var(--paper-2);}
+.stackcol .seg{width:100%;}
+.stackcol-labels{display:flex; gap:6px; margin-top:6px;}
+.stackcol-labels div{flex:1; text-align:center; font-size:10px; color:var(--ink-soft); font-family:var(--font-mono);}
+
+.heat{display:grid; grid-template-columns:repeat(7,1fr); gap:4px;}
+.heat .hd{font-size:10px; text-align:center; color:var(--ink-faint); font-weight:700; padding-bottom:2px;}
+.heat .cell{aspect-ratio:1; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:10px; font-family:var(--font-mono); border:1px solid var(--line);}
+.heat .cell.empty{background:transparent; border:none;}
+
+.insight{background:var(--accent-soft); border-radius:10px; padding:11px 12px; font-size:12.5px; line-height:1.9; color:var(--ink); border:1px solid rgba(43,92,107,0.15);}
+.insight b{color:var(--accent);}
+
+
+.btn.armed{background:var(--rose)!important; color:#fff!important; border-color:var(--rose)!important;}
+.aboutbox{text-align:center; padding:10px 0 4px; font-size:11.5px; color:var(--ink-faint); line-height:1.9;}
+.aboutbox .credit{font-weight:700; color:var(--ink-soft); margin-top:4px;}
+
+/* goals */
+.ring{position:relative; width:118px; height:118px; margin:0 auto;}
+.deadlinebox{text-align:center; padding:6px 0 2px;}
+.deadlinebox .big{font-family:var(--font-mono); font-weight:700; font-size:34px; color:var(--accent);}
+.deadlinebox .lab{font-size:12px; color:var(--ink-soft); margin-top:2px;}
+.goalcard{border-right:3px solid var(--accent); }
+
+/* plan banner + histogram + streak */
+.planbanner{background:var(--accent-soft); border:1px solid rgba(43,92,107,0.2); border-radius:10px; padding:9px 12px; font-size:12px; font-weight:600; color:var(--ink); margin-bottom:10px; display:flex; align-items:center; gap:6px;}
+.hourbars{display:flex; align-items:flex-end; gap:2px; height:70px;}
+.hourbars .hb{flex:1; background:var(--paper-2); border-radius:2px 2px 0 0; position:relative;}
+.hourbars .hb.peak{background:var(--accent);}
+.hourbars-labels{display:flex; gap:2px; margin-top:4px;}
+.hourbars-labels div{flex:1; text-align:center; font-size:8px; color:var(--ink-faint); font-family:var(--font-mono);}
+.streakbig{display:flex; align-items:center; justify-content:center; gap:10px; padding:6px 0;}
+.streakbig .num{font-family:var(--font-mono); font-weight:800; font-size:36px; color:var(--amber);}
+.streakbig .lab{font-size:12px; color:var(--ink-soft);}
+.planrow{display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid var(--line);}
+.planrow:last-child{border-bottom:none;}
+.planrow .dname{width:52px; flex-shrink:0; font-size:12px; font-weight:700; color:var(--ink-soft);}
+.subjectrow{display:flex; align-items:center; gap:8px; padding:7px 0; border-bottom:1px solid var(--line);}
+.subjectrow:last-child{border-bottom:none;}
+.subjectrow .sname{flex:1; font-size:13px; font-weight:600;}
+.pombtn{display:flex; gap:8px; margin-top:8px;}
+.pombtn input{text-align:center;}
+
+::-webkit-scrollbar{display:none;}
+.daily-done-btn{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--paper-2);color:var(--ink);font-weight:700;cursor:pointer}.daily-done-btn.done{background:#4F8A58;color:#fff;border-color:#4F8A58}
+
+
+/* TimeGrid 5.1.1 — timer layout: main stopwatch controls stay with stopwatch */
+#stopwatchPanel{margin-bottom:10px;}
+#stopwatchButtons{margin:0 0 10px;}
+.countdown-card{border-right:3px solid var(--accent);}
+.countdownBig{padding:14px!important;}
+.countdownBig .tt{font-size:32px;}
+.countdownbtns{display:flex;gap:8px;flex-wrap:wrap;}
+.countdownbtns .tbtn{flex:1;min-width:0;}
+
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div class="topbar">
+    <div class="brand">ساعت‌شمار مطالعه<small>QUARTER-HOUR TRACKER</small></div>
+    <div style="text-align:left;">
+      <div id="topClock" class="mono" style="font-size:11px;color:var(--ink-soft);"></div>
+      <div id="saveStatus" class="mono" style="font-size:9.5px;color:var(--ink-faint);margin-top:2px;"></div>
+    </div>
+  </div>
+
+
+  <div class="views">
+
+    <!-- TODAY -->
+    <section id="view-today" class="view active">
+      <div class="datenav">
+        <div class="navbtn" id="prevDay">‹</div>
+        <div class="center">
+          <div class="d1" id="dLabel1">—</div>
+          <div class="d2" id="dLabel2">—</div>
+          <div class="row" style="gap:10px;justify-content:center;">
+            <button class="todaybtn" id="jumpToday">برو به امروز</button>
+            <button class="todaybtn" id="btnJumpDate">📅 رفتن به تاریخ دیگر</button>
+          </div>
+        </div>
+        <div class="navbtn" id="nextDay">›</div>
+      </div>
+
+      <div class="planbanner" id="planBanner" style="display:none;"></div>
+
+      <div class="statgrid" style="margin-bottom:12px;">
+        <div class="stat"><div class="v mono" id="statLogged">۰٪</div><div class="l">ثبت‌شده</div></div>
+        <div class="stat"><div class="v mono" id="statStudy">۰:۰۰</div><div class="l">مطالعه</div></div>
+        <div class="stat"><div class="v mono" id="statWaste">۰:۰۰</div><div class="l">تلف‌شده</div></div>
+        <div class="stat"><div class="v mono" id="statStreak">۰</div><div class="l">استمرار 🔥</div></div>
+      </div>
+
+      <div class="chips" id="paletteChips"></div>
+
+      <div class="card question-card" id="dailyQuestionCard">
+        <div class="row" style="margin-bottom:8px;">
+          <div><h3 style="margin-bottom:2px;">تعداد سوال</h3><div class="muted" style="font-size:10.5px;" id="dailyQuestionHint">تعداد تستی که امروز زدی را دستی وارد کن. رسیدن به ۵۰ تست، روز موفق محسوب می‌شود.</div></div>
+          <div class="question-total" id="dailyQuestionTotal">۰</div>
+        </div>
+        <div class="row" style="gap:8px;align-items:center;">
+          <input type="number" id="dailyQuestionInput" min="0" step="1" inputmode="numeric" placeholder="مثلاً ۶۵" style="flex:1;">
+          <button type="button" id="dailyQuestionSave" class="btn secondary" style="width:auto;padding:9px 14px;">ثبت تعداد</button>
+        </div>
+        <div class="row" style="margin-top:8px;"><span class="muted" style="font-size:10.5px;" id="dailyQuestionStatus">امروز هنوز تستی ثبت نشده</span><button class="iconbtn" id="clearDailyQuestions" style="color:var(--rose);font-size:11px;">پاک‌کردن</button></div>
+      </div>
+
+      <div style="margin-bottom:8px;">
+        <button class="btn ghost" id="btnClearToday" style="width:auto; padding:8px 14px; font-size:11.5px;">پاک‌کردن همه‌ی امروز</button>
+      </div>
+
+      <div class="row" style="margin-bottom:10px;">
+        <div class="muted" id="lockStatusText" style="font-size:11px;">جدول باز است، لمس می‌تونه رنگ‌ها رو تغییر بده</div>
+        <div class="draglabel" style="margin:0;">
+          <span>🔒 قفل جدول</span>
+          <div class="switch" id="lockToggle"><div class="knob"></div></div>
+        </div>
+      </div>
+
+      <div class="row" style="margin-bottom:10px; gap:8px;">
+        <button class="btn secondary" id="btnGridUndo" style="width:auto; flex:1; padding:8px 10px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M3 13a9 9 0 1 0 3-7.7L3 7"/></svg>
+          بازگشت
+        </button>
+        <button class="btn secondary" id="btnGridRedo" style="width:auto; flex:1; padding:8px 10px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7v6h-6"/><path d="M21 13a9 9 0 1 1-3-7.7L21 7"/></svg>
+          دوباره
+        </button>
+      </div>
+
+      <div class="gridwrap" id="dayGrid"></div>
+
+      <div class="card" style="margin-top:12px;">
+        <h3>ثبت مستقیم ساعت (کلی، بدون رنگ‌آمیزی دستی)</h3>
+        <div class="muted" style="font-size:11px;margin-bottom:8px;">فقط کل ساعتی که برای این فعالیت گذروندی رو وارد کن — خودش می‌ره توی اولین بازه‌ی خالی جدول امروز می‌شینه. برای اعداد بزرگ (بیشتر از ۳ ساعت) یک‌بار دیگه تأیید می‌خواد تا اشتباهی ثبت نشه.</div>
+        <div class="row" style="gap:8px;">
+          <select id="quickAct" style="flex:2;"></select>
+          <input type="number" id="quickHours" min="0.25" step="0.25" placeholder="ساعت" style="flex:1;">
+        </div>
+        <button class="btn secondary" id="btnQuickLog" style="margin-top:8px;">افزودن به جدول امروز</button>
+        <div class="muted" id="quickLogUndoText" style="display:none;font-size:10.5px;margin-top:8px;"></div>
+        <button class="btn ghost" id="btnUndoQuickLog" style="display:none;margin-top:6px;">لغو آخرین ثبت</button>
+      </div>
+
+      <div class="card" id="dailyNoteCard">
+        <h3>یادداشت امروز</h3>
+        <textarea id="dailyNoteInput" rows="6" placeholder="هر چیزی که درباره‌ی امروز می‌خوای ثبت کنی اینجا بنویس..."></textarea>
+        <button class="btn secondary" id="dailyNoteSave" style="margin-top:8px;">ذخیره یادداشت</button>
+        <div class="muted" id="dailyNoteStatus" style="font-size:10.5px;margin-top:6px;"></div>
+      </div>
+    </section>
+
+    <!-- TIMER -->
+    <section id="view-timer" class="view">
+      <div class="card">
+        <h3>فعالیت انتخابی</h3>
+        <div class="chips" id="timerChips"></div>
+        <div class="muted" style="font-size:10.5px;margin-top:6px;">همین فعالیت هم برای کرنومتر و هم برای شمارش معکوس استفاده می‌شود.</div>
+      </div>
+
+      <!-- MAIN STOPWATCH: kept completely separate from countdown -->
+      <div class="timerBig" id="stopwatchPanel">
+        <div class="tt" id="timerDisplay">۰۰:۰۰:۰۰</div>
+        <div class="ta" id="timerActLabel">فعالیتی انتخاب نشده</div>
+      </div>
+
+      <div class="timerbtns" id="stopwatchButtons">
+        <button class="tbtn start" id="btnStart">▶ شروع</button>
+        <button class="tbtn pause" id="btnPause" disabled>❙❙ توقف موقت</button>
+        <button class="tbtn stop" id="btnStop" disabled>■ پایان و ثبت</button>
+      </div>
+      <div class="muted" style="font-size:10.5px;margin:2px 2px 10px;">با زدن «پایان و ثبت»، بازه‌ی زمانی خودکار در جدول امروز رنگ می‌خورد — نیازی به تأیید دستی نیست.</div>
+
+      <div class="card" id="stopConfirmCard" style="display:none; border-right:3px solid var(--accent);">
+        <h3>✓ ثبت شد</h3>
+        <div class="muted" id="stopConfirmText" style="font-size:11px;line-height:1.8;margin-bottom:9px;"></div>
+        <div class="row" style="gap:8px;">
+          <button class="btn ghost" id="btnCancelStop">لغو ثبت</button>
+        </div>
+      </div>
+
+      <!-- COUNTDOWN: a separate card, never mixed with stopwatch controls -->
+      <div class="card countdown-card" id="countdownPanel">
+        <h3>شمارش معکوس ⏳</h3>
+        <div class="muted" style="font-size:11px;line-height:1.8;margin-bottom:10px;">
+          زمان دلخواهت را تنظیم کن؛ این بخش مستقل از تایمر اصلی است. با پایان یا اتمام شمارش، خودکار در جدول امروز ثبت می‌شود.
+        </div>
+        <div class="row" style="gap:10px;">
+          <div class="field" style="flex:1;margin-bottom:0;">
+            <label class="flabel">ساعت</label>
+            <input type="number" id="countdownHours" min="0" max="99" step="1" value="0" inputmode="numeric">
+          </div>
+          <div class="field" style="flex:1;margin-bottom:0;">
+            <label class="flabel">دقیقه</label>
+            <input type="number" id="countdownMinutes" min="0" max="59" step="1" value="30" inputmode="numeric">
+          </div>
+          <div class="field" style="flex:1;margin-bottom:0;">
+            <label class="flabel">ثانیه</label>
+            <input type="number" id="countdownSeconds" min="0" max="59" step="1" value="0" inputmode="numeric">
+          </div>
+        </div>
+        <div class="timerBig countdownBig" style="margin:12px 0 10px;">
+          <div class="tt" id="countdownDisplay">۰۰:۳۰:۰۰</div>
+          <div class="ta" id="countdownStatus">آماده‌ی شروع</div>
+        </div>
+        <div class="timerbtns countdownbtns" style="margin-bottom:0;">
+          <button class="tbtn start" id="btnCountdownStart">▶ شروع</button>
+          <button class="tbtn pause" id="btnCountdownPause" disabled>❙❙ توقف موقت</button>
+          <button class="tbtn stop" id="btnCountdownStop" disabled>■ پایان و ثبت</button>
+        </div>
+      </div>
+
+      <div class="card" id="countdownConfirmCard" style="display:none; border-right:3px solid var(--accent);">
+        <h3>✓ ثبت شد</h3>
+        <div class="muted" id="countdownConfirmText" style="font-size:11px;line-height:1.8;margin-bottom:9px;"></div>
+        <div class="row" style="gap:8px;">
+          <button class="btn ghost" id="btnCancelPendingCountdown">لغو ثبت</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACTIVITIES -->
+    <section id="view-activities" class="view">
+      <div class="card">
+        <h3>فعالیت‌های من</h3>
+        <div id="actList"></div>
+      </div>
+      <div class="card">
+        <h3>افزودن فعالیت جدید</h3>
+        <div class="field">
+          <label class="flabel">نام فعالیت</label>
+          <input type="text" id="newActName" placeholder="مثلاً: نماز، مطالعه بالینی...">
+        </div>
+        <div class="field">
+          <label class="flabel">رنگ</label>
+          <input type="color" id="newActColor" value="#3D7A8C" style="height:38px;padding:3px;">
+        </div>
+        <button class="btn" id="btnAddAct">افزودن فعالیت</button>
+      </div>
+    </section>
+
+    <!-- PLANNING -->
+    <section id="view-planning" class="view">
+      <div class="card">
+        <h3>درس‌ها و فصل‌ها</h3>
+        <div id="subjectList"></div>
+        <div class="row" style="gap:8px;margin-top:8px;">
+          <input type="text" id="newSubjectName" placeholder="مثلاً: روان‌پزشکی" style="flex:1;">
+          <button class="btn secondary" id="btnAddSubject" style="width:auto;padding:9px 16px;">افزودن درس</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>برنامه هفتگی درس‌ها</h3>
+        <div class="muted" style="font-size:11px;margin-bottom:8px;">یک هفته را از تقویم زیر انتخاب کن، بعد برای هر روز چند درس و فصل مشخص کن. برنامه در تب «امروز» هم نمایش داده می‌شه.</div>
+        <div style="margin-bottom:10px;">
+          <button class="btn secondary" id="btnWeekCalendar" type="button">📅 انتخاب هفته برای برنامه‌ریزی</button>
+        </div>
+        <div id="weeklyPlanList"></div>
+      </div>
+    </section>
+
+    <!-- REPORTS -->
+    <section id="view-reports" class="view">
+      <div class="subtabs">
+        <button data-r="daily" class="active">روزانه</button>
+        <button data-r="weekly">هفتگی</button>
+        <button data-r="monthly">ماهانه</button>
+        <button data-r="analysis">تحلیل</button>
+      </div>
+      <div id="reportBody"></div>
+    </section>
+
+    <!-- GOALS -->
+    <section id="view-goals" class="view">
+      <div class="card goalcard">
+        <h3 id="goalTitleShow">هدف کلی</h3>
+        <div class="deadlinebox">
+          <div class="big mono" id="goalDaysLeft">—</div>
+          <div class="lab" id="goalDeadlineLabel">روز باقی‌مانده</div>
+        </div>
+      </div>
+
+      <div class="card" style="border-right:3px solid var(--amber);">
+        <h3>استمرار مطالعه</h3>
+        <div class="streakbig">
+          <div class="num mono" id="streakNum">۰</div>
+          <div class="lab">روز پیاپی بدون افت زیر حداقل ساعت مطالعه</div>
+        </div>
+        <div class="muted mono" id="todayQuestionsText" style="font-size:11px;text-align:center;margin-top:2px;"></div>
+      </div>
+
+      <div class="card">
+        <h3>تنظیم هدف‌ها</h3>
+        <div class="field">
+          <label class="flabel">عنوان هدف کلی</label>
+          <input type="text" id="goalTitle" placeholder="مثلاً: آزمون دستیاری ۱۴۰۶">
+        </div>
+        <div class="field">
+          <label class="flabel">تاریخ ددلاین هدف کلی (شمسی)</label>
+          <div class="row" style="gap:6px;">
+            <input type="number" id="goalDateDay" min="1" max="31" placeholder="روز" style="flex:1;">
+            <select id="goalDateMonth" style="flex:2;"></select>
+            <input type="number" id="goalDateYear" min="1400" max="1450" placeholder="سال" style="flex:1;">
+          </div>
+        </div>
+        <div class="field">
+          <label class="flabel">هدف کلی مطالعه تا ددلاین (ساعت — اختیاری)</label>
+          <input type="number" id="goalTotal" min="0" step="10" placeholder="مثلاً ۲۰۰۰">
+        </div>
+        <div class="row" style="gap:10px;">
+          <div class="field" style="flex:1;">
+            <label class="flabel">هدف روزانه (ساعت)</label>
+            <input type="number" id="goalDaily" min="0" step="0.5" value="6">
+          </div>
+          <div class="field" style="flex:1;">
+            <label class="flabel">هدف هفتگی (ساعت)</label>
+            <input type="number" id="goalWeekly" min="0" step="1" value="40">
+          </div>
+        </div>
+        <div class="field">
+          <label class="flabel">هدف ماهانه (ساعت)</label>
+          <input type="number" id="goalMonthly" min="0" step="5" value="160">
+        </div>
+        <button class="btn" id="btnSaveGoal">ذخیره هدف‌ها</button>
+      </div>
+
+      <div class="card">
+        <h3>پیشرفت امروز نسبت به هدف روزانه</h3>
+        <div class="barbg" style="height:10px;"><div class="barfg" id="goalDailyBar" style="background:var(--accent); width:0%;"></div></div>
+        <div class="muted mono" id="goalDailyText" style="font-size:11px;margin-top:5px;">۰ از ۰ ساعت</div>
+      </div>
+      <div class="card">
+        <h3>پیشرفت این هفته نسبت به هدف هفتگی</h3>
+        <div class="barbg" style="height:10px;"><div class="barfg" id="goalWeeklyBar" style="background:var(--amber); width:0%;"></div></div>
+        <div class="muted mono" id="goalWeeklyText" style="font-size:11px;margin-top:5px;">۰ از ۰ ساعت</div>
+      </div>
+      <div class="card">
+        <h3>پیشرفت این ماه نسبت به هدف ماهانه</h3>
+        <div class="barbg" style="height:10px;"><div class="barfg" id="goalMonthlyBar" style="background:#6B7A3D; width:0%;"></div></div>
+        <div class="muted mono" id="goalMonthlyText" style="font-size:11px;margin-top:5px;">۰ از ۰ ساعت</div>
+      </div>
+      <div class="card" style="border-right:3px solid var(--ink);">
+        <h3>پیشرفت کلی نسبت به هدف نهایی</h3>
+        <div class="barbg" style="height:10px;"><div class="barfg" id="goalTotalBar" style="background:var(--ink); width:0%;"></div></div>
+        <div class="muted mono" id="goalTotalText" style="font-size:11px;margin-top:5px;">هدف کلی تنظیم نشده</div>
+        <div class="insight" id="goalTotalSuggestion" style="margin-top:10px; display:none;"></div>
+      </div>
+
+      <div class="card" style="border-right:3px solid var(--accent);">
+        <h3>تنظیم استمرار مطالعه</h3>
+        <div class="muted" style="font-size:11px;line-height:1.8;margin-bottom:8px;">استمرار زمانی حفظ می‌شود که در هر روز حداقل این مقدار مطالعه ثبت شده باشد. اگر یک روز کمتر از این مقدار باشد، استمرار از نو شروع می‌شود.</div>
+        <div class="field">
+          <label class="flabel">حداقل ساعت مطالعه برای حفظ استمرار</label>
+          <input type="number" id="continuityMinHours" min="0.25" max="24" step="0.25" value="3">
+        </div>
+        <button class="btn secondary" id="btnSaveContinuity">ذخیره حداقل ساعت</button>
+        <div class="muted" id="continuitySettingStatus" style="font-size:10.5px;margin-top:6px;"></div>
+      </div>
+
+      <div class="card" style="border-right:3px solid var(--amber);">
+        <h3>تنظیم استمرار سوالات</h3>
+        <div class="muted" style="font-size:11px;line-height:1.8;margin-bottom:8px;">استریک سوالات زمانی حفظ می‌شود که در هر روز حداقل این تعداد تست ثبت شده باشد. اگر یک روز کمتر از این مقدار باشد، استریک از نو شروع می‌شود.</div>
+        <div class="field">
+          <label class="flabel">حداقل تعداد تست روزانه برای حفظ استمرار</label>
+          <input type="number" id="questionTargetInput" min="1" step="1" value="50">
+        </div>
+        <button class="btn secondary" id="btnSaveQuestionTarget">ذخیره حداقل تست</button>
+        <div class="muted" id="questionTargetStatus" style="font-size:10.5px;margin-top:6px;"></div>
+      </div>
+
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="view-settings" class="view">
+      <div class="card">
+        <h3>مشخصات کاربر</h3>
+        <div class="field">
+          <label class="flabel">نام و نام خانوادگی</label>
+          <input type="text" id="userFullName" placeholder="مثلاً: علی محمدی">
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>ظاهر برنامه</h3>
+        <div class="row">
+          <span style="font-size:12px;font-weight:600;">حالت تاریک</span>
+          <div class="switch" id="darkModeToggle"><div class="knob"></div></div>
+        </div>
+      </div>
+
+      <div class="card" style="border-right:3px solid var(--rose);">
+        <h3>پشتیبان‌گیری از اطلاعات</h3>
+        <div class="muted" style="font-size:11.5px;line-height:1.9;margin-bottom:10px;">
+          همه‌چیز به‌صورت خودکار ذخیره می‌شه (وضعیتش بالای صفحه دیده می‌شه)، ولی برای اطمینان کامل و جلوگیری از پاک‌شدن اطلاعات،
+          هر چند وقت یک‌بار یه فایل پشتیبان بگیر. اگه یک روز اطلاعات پاک شد، همین فایل رو بازیابی کن تا همه‌چیز برگرده.
+        </div>
+        <button class="btn secondary" id="btnExport" style="margin-bottom:8px;">دانلود فایل پشتیبان</button>
+        <input type="file" id="importFile" accept="application/json" style="display:none;">
+        <button class="btn ghost" id="btnImport" style="margin-bottom:8px;">بازیابی از فایل پشتیبان</button>
+        <div class="muted" id="backupStatusText" style="font-size:10.5px;margin-bottom:8px;"></div>
+        <button class="btn ghost" id="btnResetAll">ریست کامل برنامه</button>
+        <div class="muted" style="font-size:10.5px;margin-top:6px;">با ریست کامل، تمام فعالیت‌ها، جدول‌های هر روز و هدف‌ها برای همیشه پاک می‌شن.</div>
+        <div class="muted" style="font-size:10.5px;margin-top:6px;">
+          نکته‌ی مهم: قبل از نصب هر آپدیت جدید برنامه (فایل apk جدید)، حتماً یه فایل پشتیبان بگیر. اطلاعات معمولاً خودش رد آپدیت می‌مونه، ولی این فایل بیمه‌ی نهاییته.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="aboutbox">
+          <div>ساعت‌شمار مطالعه — نسخه‌ی شخصی برای ردیابی زمان و مطالعه</div>
+          <div class="muted mono" style="font-size:10px;margin-top:4px;">نسخه‌ی برنامه: <span id="aboutAppVersion"></span> — نسخه‌ی داده: <span id="aboutDataVersion"></span></div>
+          <div class="credit">Made with ❤️ By MoNji ;)</div>
+          <div class="credit">Telegram: @MohammadNajafi98</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-card" id="modalCardBody"></div>
+  </div>
+
+  <nav class="tabbar">
+    <button data-tab="today" class="active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+      امروز
+    </button>
+    <button data-tab="timer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>
+      تایمر
+    </button>
+    <button data-tab="activities">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+      فعالیت‌ها
+    </button>
+    <button data-tab="planning">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="17" rx="2"/><path d="M8 2v4M16 2v4M4 10h16M9 15h2M9 18h5"/></svg>
+      برنامه‌ریزی
+    </button>
+    <button data-tab="reports">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
+      گزارش
+    </button>
+    <button data-tab="goals">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.5" fill="currentColor"/></svg>
+      هدف
+    </button>
+    <button data-tab="settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      تنظیمات
+    </button>
+  </nav>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------------- utils ---------------- */
+const faDigits = s => String(s).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const pad2 = n => String(n).padStart(2,'0');
+function ymd(date){ return date.getFullYear()+'-'+pad2(date.getMonth()+1)+'-'+pad2(date.getDate()); }
+function addDays(date, n){ const d=new Date(date); d.setDate(d.getDate()+n); return d; }
+function sameDay(a,b){ return ymd(a)===ymd(b); }
+
+// Jalali <-> Gregorian (Borkowski algorithm)
+function g2j(gy, gm, gd){
+  const g_d_m=[0,31,59,90,120,151,181,212,243,273,304,334];
+  let jy;
+  if (gy>1600){ jy=979; gy-=1600; } else { jy=0; gy-=621; }
+  const gy2=(gm>2)?(gy+1):gy;
+  let days=(365*gy)+Math.floor((gy2+3)/4)-Math.floor((gy2+99)/100)+Math.floor((gy2+399)/400)-80+gd+g_d_m[gm-1];
+  jy+=33*Math.floor(days/12053); days%=12053;
+  jy+=4*Math.floor(days/1461); days%=1461;
+  if (days>365){ jy+=Math.floor((days-1)/365); days=(days-1)%365; }
+  const jm=(days<186)?1+Math.floor(days/31):7+Math.floor((days-186)/30);
+  const jd=1+((days<186)?(days%31):((days-186)%30));
+  return [jy,jm,jd];
+}
+function j2g(jy, jm, jd){
+  let gy;
+  if (jy>979){ gy=1600; jy-=979; } else { gy=621; }
+  let days=(365*jy)+(Math.floor(jy/33)*8)+Math.floor(((jy%33)+3)/4)+78+jd+((jm<7)?(jm-1)*31:((jm-7)*30)+186);
+  gy+=400*Math.floor(days/146097); days%=146097;
+  if (days>36524){ gy+=100*Math.floor((days-1)/36524); days=(days-1)%36524; if (days>=365) days++; }
+  gy+=4*Math.floor(days/1461); days%=1461;
+  if (days>365){ gy+=Math.floor((days-1)/365); days=(days-1)%365; }
+  const gd=days+1;
+  const leap = (gy%4===0 && gy%100!==0) || (gy%400===0);
+  const sal_a=[0,31,leap?29:28,31,30,31,30,31,31,30,31,30,31];
+  let gm=0, gdRem=gd;
+  for (gm=1; gm<=12; gm++){ if (gdRem<=sal_a[gm]) break; gdRem-=sal_a[gm]; }
+  return [gy, gm, gdRem];
+}
+const JMONTHS=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+const JWEEK=['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه']; // index = JS getDay()
+function jalaliLabel(date){
+  const [jy,jm,jd]=g2j(date.getFullYear(), date.getMonth()+1, date.getDate());
+  return {jy,jm,jd, weekday:JWEEK[date.getDay()], monthName:JMONTHS[jm-1],
+    full: JWEEK[date.getDay()]+' '+faDigits(jd)+' '+JMONTHS[jm-1]+' '+faDigits(jy)};
+}
+function hm(minutes){
+  minutes = Math.round(minutes);
+  const h=Math.floor(minutes/60), m=minutes%60;
+  return faDigits(h)+':'+faDigits(pad2(m));
+}
+function hOnly(minutes){ return faDigits((minutes/60).toFixed(1)); }
+
+
+/* ---------------- storage helpers ----------------
+   Uses Claude's window.storage when this page runs inside a Claude
+   artifact. When the file is downloaded and opened in an ordinary
+   browser, window.storage doesn't exist, so we fall back to
+   localStorage — this keeps the downloaded copy fully working and
+   persistent on its own. */
+const hasClaudeStorage = (typeof window.storage !== 'undefined') && window.storage && typeof window.storage.get === 'function';
+async function storeGet(key){
+  try{
+    if (hasClaudeStorage){ const r = await window.storage.get(key, false); return r ? JSON.parse(r.value) : null; }
+    const v = localStorage.getItem(key); return v ? JSON.parse(v) : null;
+  } catch(e){ return null; }
+}
+async function storeSet(key, val){
+  try{
+    if (hasClaudeStorage){ await window.storage.set(key, JSON.stringify(val), false); }
+    else { localStorage.setItem(key, JSON.stringify(val)); }
+    // Bump the version so cached streak/continuity computations (which re-scan
+    // potentially hundreds of days) know to recompute — see computeStudyContinuity /
+    // computeQuestionStreak / computeStudyStreak below.
+    if (key.startsWith('day:') || key.startsWith('questions:')) StreakCacheVersion.count++;
+    setSaveStatus('ذخیره شد ✓ '+faDigits(pad2(new Date().getHours()))+':'+faDigits(pad2(new Date().getMinutes())));
+  } catch(e){ console.warn('save failed', key, e); setSaveStatus('⚠ ذخیره نشد — از پشتیبان‌گیری دستی استفاده کن'); }
+}
+const StreakCacheVersion = {count: 0};
+function setSaveStatus(msg){ const el=document.getElementById('saveStatus'); if(el) el.textContent = msg; }
+function debounce(fn, ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; }
+
+/* ---------------- state ---------------- */
+const DEFAULT_ACTIVITIES = [
+  {id:'study',    name:'مطالعه',        color:'#2B5C6B'},
+  {id:'sleep',    name:'خواب',          color:'#4A4E8C'},
+  {id:'rest',     name:'استراحت',       color:'#9B85A8'},
+  {id:'waste',    name:'تلف‌کردن',      color:'#A79C89'},
+  {id:'exercise', name:'ورزش',          color:'#6B7A3D'},
+  {id:'work',     name:'کار / کلینیک',  color:'#C08A2E'},
+  {id:'personal', name:'شخصی',          color:'#B5586B'},
+];
+
+const DEFAULT_QUESTION_TARGET = 50; // fallback if the user hasn't set a custom minimum yet
+function getQuestionTarget(){ return Math.max(1, parseInt(App.settings?.dailyQuestionTarget,10) || DEFAULT_QUESTION_TARGET); }
+
+/* ---------------- versioning ----------------
+   APP_VERSION: bump this string in every future release (shown in
+   Settings + saved inside backup files) so you can always tell which
+   build a given backup file or bug report came from.
+   DATA_SCHEMA_VERSION: bump this ONLY when you change the *shape* of
+   saved data (rename a key, change a field's meaning, restructure an
+   object, etc). Add a matching entry to MIGRATIONS below — never
+   delete an old migration, and never renumber existing ones, so a
+   user who updates straight from an old build still runs every step
+   in order. Every migration function must be safe to run twice (it's
+   fine if a user already effectively "had" the change — check before
+   writing, like the step below does). This is what keeps old users'
+   data working automatically after you publish an update, without
+   them ever having to import a manual backup. */
+const APP_VERSION = '5.1.1';
+const DATA_SCHEMA_VERSION = 2;
+const MIGRATIONS = {
+  // 1: add the "استراحت" activity + convert old flat weeklyPlan -> dated weeklyPlans.
+  1: async function migrateTo1(){
+    if (!App.activities.some(a=>a.id==='rest' || a.name==='استراحت')){
+      App.activities.push({id:'rest', name:'استراحت', color:'#9B85A8'});
+      await storeSet('activities', App.activities);
+    }
+    if (!App.weeklyPlans.length){
+      const oldPlan = await storeGet('weeklyPlan');
+      if (oldPlan && Object.keys(oldPlan).length){
+        const {start} = jalaliWeekRange(new Date());
+        App.weeklyPlans = [{id:'w'+Date.now(), startDate:ymd(start), days:{}, legacyNote:oldPlan}];
+        await storeSet('weeklyPlans', App.weeklyPlans);
+      }
+    }
+  },
+  // 2: add per-day notes + completion state for planned chapters.
+  2: async function migrateTo2(){
+    const keys = await listKeysWithPrefix('daymeta:');
+    for (const k of keys){ const v=await storeGet(k); if(!v || typeof v!=='object') await storeSet(k,{note:'',completed:{}}); }
+  },
+  // Add migrateTo3, migrateTo4, ... here in future updates. Never edit
+  // a shipped migration after release — add a new one instead.
+};
+async function runMigrations(){
+  const from = (await storeGet('dataVersion')) || 0;
+  for (let v = from+1; v <= DATA_SCHEMA_VERSION; v++){
+    if (MIGRATIONS[v]){
+      try{ await MIGRATIONS[v](); }
+      catch(e){ console.warn('migration '+v+' failed', e); }
+    }
+  }
+  if (from !== DATA_SCHEMA_VERSION) await storeSet('dataVersion', DATA_SCHEMA_VERSION);
+}
+
+const App = {
+  activities: [],
+  subjects: [],                   // {id, name, chapters:[{id,name}]} — courses + their chapters
+  weeklyPlans: [],                // [{id, startDate:'YYYY-MM-DD' (Saturday), days:{0..6:{subjectId,chapterId}}}]
+  settings: null,                 // reminders
+  viewDate: new Date(),
+  todayGrid: new Array(96).fill(null),   // for viewDate
+  todayQuestions: 0,
+  todayMeta: {note:'', completed:{}},
+  selectedActivity: null,
+  gridLocked: false,
+  painting: false,
+  paintValue: null,
+  gridStroke: null,      // Map(idx -> valueBeforeThisStroke), only while a paint gesture is in progress
+  gridUndoStack: [],     // [{idx,from,to}, ...] per committed stroke, for the currently viewed day
+  gridRedoStack: [],
+  timer: {activityId:null, running:false, startedAt:0, elapsedMs:0, intervalId:null},
+  goals: null,
+  reportTab: 'daily',
+  reportWeekAnchor: new Date(),   // any date inside the Jalali week being viewed
+  reportMonthJY: null,            // Jalali year of the month being viewed
+  reportMonthJM: null,            // Jalali month (1-12) being viewed
+};
+function defaultSettings(){
+  return { continuityMinHours:3, dailyQuestionTarget:DEFAULT_QUESTION_TARGET, darkMode:false, fullName:'',
+           lastBackupAt:null };
+}
+/* first name only, used to address the user in reports and daily insights */
+function firstName(){
+  const full = (App.settings && App.settings.fullName || '').trim();
+  return full ? full.split(/\s+/)[0] : '';
+}
+function addressPrefix(){
+  const n = firstName();
+  return n ? `${n} جان، ` : '';
+}
+function renderUserNameSettings(){
+  const input = document.getElementById('userFullName');
+  if (input) input.value = (App.settings && App.settings.fullName) || '';
+}
+function subjById(id){ return App.subjects.find(s=>s.id===id) || null; }
+function localDateFromYmd(str){ const a=String(str).split('-').map(Number); return new Date(a[0],(a[1]||1)-1,a[2]||1); }
+async function saveWeeklyPlans(){
+  await storeSet('weeklyPlans', App.weeklyPlans);
+}
+function chapterById(subjectId, chapterId){
+  const s = subjById(subjectId);
+  return s ? (s.chapters||[]).find(c=>c.id===chapterId) || null : null;
+}
+async function listKeysWithPrefix(prefix){
+  try{
+    if (hasClaudeStorage){ const r = await window.storage.list(prefix, false); return (r && r.keys) || []; }
+    const out=[]; for (let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if (k && k.startsWith(prefix)) out.push(k); } return out;
+  } catch(e){ return []; }
+}
+
+/* Persian calendar week = Saturday..Friday */
+function jalaliWeekRange(anchor){
+  const dow = anchor.getDay(); // 0=Sun..6=Sat
+  const sinceSat = (dow - 6 + 7) % 7;
+  const start = addDays(anchor, -sinceSat); start.setHours(0,0,0,0);
+  const end = addDays(start, 6);
+  return {start, end};
+}
+function jalaliMonthRange(jy, jm){
+  const [gy,gm,gd] = j2g(jy, jm, 1);
+  const start = new Date(gy, gm-1, gd); start.setHours(0,0,0,0);
+  let nJm = jm+1, nJy = jy;
+  if (nJm>12){ nJm=1; nJy=jy+1; }
+  const [ngy,ngm,ngd] = j2g(nJy, nJm, 1);
+  const nextStart = new Date(ngy, ngm-1, ngd);
+  const end = addDays(nextStart, -1); end.setHours(0,0,0,0);
+  return {start, end};
+}
+async function loadDaysBetween(start, end){
+  const keys = [];
+  let d = new Date(start);
+  while (d <= end){ keys.push(ymd(d)); d = addDays(d,1); }
+  const results = await Promise.all(keys.map(k=>storeGet('day:'+k)));
+  return keys.map((k,i)=>({date:k, grid: results[i] || new Array(96).fill(null)}));
+}
+function weekLabel(start, end){
+  const [sy,sm,sd] = g2j(start.getFullYear(), start.getMonth()+1, start.getDate());
+  const [ey,em,ed] = g2j(end.getFullYear(), end.getMonth()+1, end.getDate());
+  if (sy===ey && sm===em) return `${faDigits(sd)} تا ${faDigits(ed)} ${JMONTHS[sm-1]} ${faDigits(sy)}`;
+  return `${faDigits(sd)} ${JMONTHS[sm-1]} تا ${faDigits(ed)} ${JMONTHS[em-1]} ${faDigits(ey)}`;
+}
+function navHTML(prevId, nextId, jumpId, jumpLabel, line1, line2){
+  return `<div class="datenav" style="margin-bottom:12px;">
+    <div class="navbtn" id="${prevId}">‹</div>
+    <div class="center">
+      <div class="d1">${line1}</div>
+      <div class="d2">${line2}</div>
+      <button class="todaybtn" id="${jumpId}">${jumpLabel}</button>
+    </div>
+    <div class="navbtn" id="${nextId}">›</div>
+  </div>`;
+}
+
+function actById(id){ return App.activities.find(a=>a.id===id) || {id:null, name:'حذف‌شده', color:'#C7BB9E'}; }
+
+/* ---------------- init ----------------
+   The UI is wired up synchronously first with sane defaults, so the
+   app is fully interactive immediately no matter what happens with
+   storage. Saved data (if any) is then loaded in the background and
+   the screen refreshes once it's ready — a slow or unavailable
+   storage layer can never leave the buttons inert. */
+function defaultGoals(){
+  const [gy,gm,gd] = j2g(1406,2,16);
+  return { title:'آزمون دستیاری ۱۴۰۶', deadline:ymd(new Date(gy,gm-1,gd)),
+    dailyHours:6, weeklyHours:40, monthlyHours:160, totalHours:0, linkedActivity:'study' };
+}
+function initSync(){
+  App.activities = DEFAULT_ACTIVITIES.slice();
+  App.goals = defaultGoals();
+  App.subjects = [];
+  App.weeklyPlans = [];
+  App.settings = defaultSettings();
+  App.todayGrid = new Array(96).fill(null);
+  App.todayMeta = {note:'',completed:{}};
+  const todayJ = g2j(new Date().getFullYear(), new Date().getMonth()+1, new Date().getDate());
+  App.reportMonthJY = todayJ[0]; App.reportMonthJM = todayJ[1];
+  App.reportWeekAnchor = new Date();
+  renderAll();
+  wireEvents();
+  renderCountdown();
+  tickClock(); setInterval(tickClock, 1000*20);
+}
+async function hydrate(){
+  try{
+    const acts = await storeGet('activities');
+    if (acts && acts.length) App.activities = acts; else await storeSet('activities', App.activities);
+    const g = await storeGet('goals');
+    if (g) App.goals = g; else await storeSet('goals', App.goals);
+    const subs = await storeGet('subjects');
+    if (subs) App.subjects = subs.map(s=>({id:s.id, name:s.name, chapters:s.chapters||[]}));
+    const plans = await storeGet('weeklyPlans');
+    if (plans) App.weeklyPlans = plans.map(w=>({id:w.id||('w'+Date.now()+Math.random()), startDate:String(w.startDate), days:w.days||{}}));
+    const st = await storeGet('settings');
+    App.settings = Object.assign(defaultSettings(), st||{});
+    // run every schema migration this install hasn't seen yet — this is
+    // what makes old users' saved data keep working after you ship an
+    // update, without needing a manual backup/restore
+    await runMigrations();
+    await loadDayIntoState(App.viewDate);
+    renderAll();
+    await restoreStopwatch();
+    await restoreCountdown();
+  } catch(e){ console.warn('hydrate skipped, using in-memory defaults', e); }
+}
+function init(){
+  initSync(); hydrate();
+}
+
+async function loadDayIntoState(date){
+  const key = 'day:'+ymd(date);
+  const data = await storeGet(key);
+  App.todayGrid = data && data.length===96 ? data : new Array(96).fill(null);
+  const q=await storeGet('questions:'+ymd(date)); App.todayQuestions=Math.max(0,Math.min(100,parseInt(q||'0',10)||0));
+  const meta=await storeGet('daymeta:'+ymd(date));
+  App.todayMeta=(meta&&typeof meta==='object')?{note:String(meta.note||''),completed:(meta.completed&&typeof meta.completed==='object')?meta.completed:{}}:{note:'',completed:{}};
+  App.gridUndoStack=[]; App.gridRedoStack=[]; App.gridStroke=null;
+}
+const saveCurrentDayDebounced = debounce(async ()=>{
+  await storeSet('day:'+ymd(App.viewDate), App.todayGrid);
+  renderGoalsView();
+}, 450);
+
+function completedChapterKey(subjectId,chapterId){return `${subjectId}::${chapterId}`;}
+function isChapterDone(subjectId,chapterId){return !!(App.todayMeta.completed&&App.todayMeta.completed[completedChapterKey(subjectId,chapterId)]);}
+function plannedChaptersForDate(date){
+  const week=weekPlanForDate(date), day=week?normalizeWeekDay(week.days[date.getDay()]):{items:[]}, out=[];
+  day.items.forEach(it=>{const s=subjById(it.subjectId);if(!s)return;const ids=it.chapterIds||[];if(ids.length)ids.forEach(cid=>{const c=chapterById(it.subjectId,cid);if(c)out.push({subjectId:s.id,subject:s.name,chapterId:c.id,chapter:c.name});});else out.push({subjectId:s.id,subject:s.name,chapterId:null,chapter:'کل درس'});});
+  return out;
+}
+function renderDailyNote(){const input=document.getElementById('dailyNoteInput'),status=document.getElementById('dailyNoteStatus');if(!input)return;input.value=App.todayMeta.note||'';if(status)status.textContent=App.todayMeta.note?'یادداشت این روز ذخیره شده ✓':'هنوز یادداشتی برای این روز ثبت نشده';}
+async function saveDailyNote(){const input=document.getElementById('dailyNoteInput');App.todayMeta.note=(input?.value||'').trim();await storeSet('daymeta:'+ymd(App.viewDate),App.todayMeta);renderDailyNote();renderReport();}
+async function togglePlannedChapter(subjectId,chapterId,checked){if(!App.todayMeta.completed)App.todayMeta.completed={};const key=completedChapterKey(subjectId,chapterId);if(checked)App.todayMeta.completed[key]=true;else delete App.todayMeta.completed[key];await storeSet('daymeta:'+ymd(App.viewDate),App.todayMeta);renderPlanBanner();renderReport();}
+function renderPlanProgress(items){const cs=items.filter(x=>x.chapterId);if(!cs.length)return '';const done=cs.filter(x=>isChapterDone(x.subjectId,x.chapterId)).length;return `<div class="plan-status">انجام‌شده: <b>${faDigits(done)}</b> از ${faDigits(cs.length)} فصل · ${faDigits(Math.round(done/cs.length*100))}٪</div>`;}
+
+/* ---------------- theme ---------------- */
+function applyTheme(){
+  const dark = !!(App.settings && App.settings.darkMode);
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  const toggle = document.getElementById('darkModeToggle');
+  if (toggle) toggle.classList.toggle('on', dark);
+}
+function renderBackupSettings(){
+  const el = document.getElementById('backupStatusText');
+  if (el){
+    const last = App.settings && App.settings.lastBackupAt ? new Date(App.settings.lastBackupAt) : null;
+    if (!last){
+      el.textContent = 'هنوز هیچ فایل پشتیبانی نگرفتی.';
+    } else {
+      const days = Math.floor((Date.now()-last.getTime())/86400000);
+      const dateStr = jalaliLabel(last).full;
+      el.textContent = days<=0 ? ('آخرین پشتیبان: امروز ('+dateStr+')') : ('آخرین پشتیبان: '+faDigits(days)+' روز پیش ('+dateStr+')');
+      if (days>=14) el.textContent += ' — یه پشتیبان تازه بگیر ⚠';
+    }
+  }
+  const va = document.getElementById('aboutAppVersion'); if (va) va.textContent = APP_VERSION;
+  const vd = document.getElementById('aboutDataVersion'); if (vd) vd.textContent = faDigits(DATA_SCHEMA_VERSION);
+}
+function renderThemeSettings(){
+  const toggle = document.getElementById('darkModeToggle');
+  if (toggle) toggle.classList.toggle('on', !!(App.settings && App.settings.darkMode));
+}
+function renderQuestionTargetSetting(){
+  const el = document.getElementById('questionTargetInput');
+  if (el) el.value = getQuestionTarget();
+}
+
+/* ---------------- render root ---------------- */
+function renderAll(){
+  applyTheme();
+  renderBackupSettings();
+  renderPalette();
+  renderDateNav();
+  renderGrid();
+  renderStats();
+  renderDailyQuestions();
+  renderDailyNote();
+  renderTimerChips();
+  renderQuickLogSelectors();
+  renderActivitiesList();
+  renderSubjectsList();
+  renderWeeklyPlanList();
+  renderPlanBanner();
+  renderThemeSettings();
+  renderQuestionTargetSetting();
+  renderUserNameSettings();
+  renderReport();
+  renderGoalsView();
+}
+
+function renderPalette(){
+  const wrap = document.getElementById('paletteChips');
+  wrap.innerHTML = '';
+  const eraser = document.createElement('div');
+  eraser.className = 'chip eraser' + (App.selectedActivity===null ? ' selected':'');
+  eraser.innerHTML = '<span class="dot" style="background:#fff;border:1px solid var(--line-strong);"></span>پاک‌کن';
+  eraser.onclick = ()=>{ App.selectedActivity=null; renderPalette(); };
+  wrap.appendChild(eraser);
+  App.activities.forEach(a=>{
+    const c = document.createElement('div');
+    c.className = 'chip' + (App.selectedActivity===a.id ? ' selected':'');
+    c.innerHTML = `<span class="dot" style="background:${a.color}"></span>${a.name}`;
+    c.onclick = ()=>{ App.selectedActivity=a.id; renderPalette(); };
+    wrap.appendChild(c);
+  });
+  if (App.selectedActivity===null && App.activities.length && !document.querySelector('.chip.selected')){
+    // keep eraser as default selection, fine
+  }
+}
+
+function renderDateNav(){
+  const j = jalaliLabel(App.viewDate);
+  document.getElementById('dLabel1').textContent = j.full;
+  document.getElementById('dLabel2').textContent = faDigits(App.viewDate.getFullYear())+'/'+faDigits(pad2(App.viewDate.getMonth()+1))+'/'+faDigits(pad2(App.viewDate.getDate()));
+}
+
+function renderGrid(){
+  const wrap = document.getElementById('dayGrid');
+  let html = '';
+  for (let h=0; h<24; h++){
+    html += `<div class="hourrow"><div class="hlabel">${faDigits(pad2(h))}:۰۰</div>`;
+    for (let q=0; q<4; q++){
+      const idx = h*4+q;
+      const val = App.todayGrid[idx];
+      const style = val ? `style="background:${actById(val).color}"` : '';
+      html += `<div class="qcell ${val?'filled':''}" data-idx="${idx}" ${style}></div>`;
+    }
+    html += `</div>`;
+  }
+  wrap.innerHTML = html;
+  wrap.classList.toggle('locked', App.gridLocked);
+  wrap.querySelectorAll('.qcell').forEach(cell=>{
+    cell.addEventListener('pointerdown', e=>{
+      if (App.gridLocked) return;
+      const idx = +cell.dataset.idx;
+      App.painting = true;
+      App.gridStroke = new Map();
+      App.paintValue = (App.todayGrid[idx]===App.selectedActivity) ? null : App.selectedActivity;
+      paintCell(idx, App.paintValue);
+    });
+  });
+  renderGridUndoRedoButtons();
+}
+// Single, permanent listener (registered once in wireEvents) instead of one
+// added on every renderGrid() call — the old per-render registration piled
+// up an ever-growing set of document listeners and was the main cause of
+// the app slowing down and eventually freezing/crashing during long sessions.
+function onGridPointerUp(){
+  if (!App.painting) return;
+  App.painting = false;
+  commitGridStroke();
+  saveCurrentDayDebounced();
+}
+function paintCell(idx, val){
+  if (App.gridStroke && !App.gridStroke.has(idx)) App.gridStroke.set(idx, App.todayGrid[idx]);
+  App.todayGrid[idx] = val;
+  const cell = document.querySelector(`.qcell[data-idx="${idx}"]`);
+  if (cell){
+    if (val){ cell.classList.add('filled'); cell.style.background = actById(val).color; }
+    else { cell.classList.remove('filled'); cell.style.background=''; }
+  }
+  renderStats();
+  saveCurrentDayDebounced();
+}
+
+/* ---------------- grid undo / redo ----------------
+   Each finished tap on a cell is recorded
+   as one entry: the set of cell indices it touched, with their values
+   from just before and just after the stroke. Undo/redo walk this stack
+   without touching the storage layer directly — paintCell() already
+   handles saving. Stacks are per viewed-day and reset on day navigation. */
+const GRID_UNDO_LIMIT = 50;
+function commitGridStroke(){
+  const stroke = App.gridStroke;
+  App.gridStroke = null;
+  if (!stroke || !stroke.size) return;
+  const changes = [];
+  stroke.forEach((from, idx)=>{
+    const to = App.todayGrid[idx];
+    if (from !== to) changes.push({idx, from, to});
+  });
+  if (!changes.length) return;
+  App.gridUndoStack.push(changes);
+  if (App.gridUndoStack.length > GRID_UNDO_LIMIT) App.gridUndoStack.shift();
+  App.gridRedoStack = [];
+  renderGridUndoRedoButtons();
+}
+function applyGridChanges(changes, direction){
+  changes.forEach(c=>{
+    const idx = c.idx, val = direction==='undo' ? c.from : c.to;
+    App.todayGrid[idx] = val;
+    const cell = document.querySelector(`.qcell[data-idx="${idx}"]`);
+    if (cell){
+      if (val){ cell.classList.add('filled'); cell.style.background = actById(val).color; }
+      else { cell.classList.remove('filled'); cell.style.background=''; }
+    }
+  });
+  renderStats();
+  saveCurrentDayDebounced();
+}
+async function undoGrid(){
+  if (App.gridLocked){ setSaveStatus('⚠ جدول قفل است — اول قفل رو باز کن'); return; }
+  const changes = App.gridUndoStack.pop();
+  if (!changes) return;
+  applyGridChanges(changes, 'undo');
+  App.gridRedoStack.push(changes);
+  renderGridUndoRedoButtons();
+}
+async function redoGrid(){
+  if (App.gridLocked){ setSaveStatus('⚠ جدول قفل است — اول قفل رو باز کن'); return; }
+  const changes = App.gridRedoStack.pop();
+  if (!changes) return;
+  applyGridChanges(changes, 'redo');
+  App.gridUndoStack.push(changes);
+  renderGridUndoRedoButtons();
+}
+function renderGridUndoRedoButtons(){
+  const u = document.getElementById('btnGridUndo'), r = document.getElementById('btnGridRedo');
+  if (u) u.disabled = !App.gridUndoStack.length;
+  if (r) r.disabled = !App.gridRedoStack.length;
+}
+
+function renderDailyQuestions(){
+  const totalEl=document.getElementById('dailyQuestionTotal'), input=document.getElementById('dailyQuestionInput'), status=document.getElementById('dailyQuestionStatus'), hint=document.getElementById('dailyQuestionHint');
+  if(!totalEl||!input)return;
+  const total=Math.max(0,Number(App.todayQuestions)||0), hit=total>=getQuestionTarget();
+  totalEl.textContent=faDigits(total); totalEl.classList.toggle('hit',hit);
+  input.value=total||'';
+  if(hint) hint.textContent=`تعداد تستی که امروز زدی را دستی وارد کن. رسیدن به ${faDigits(getQuestionTarget())} تست، روز موفق محسوب می‌شود.`;
+  status.textContent=hit ? `✓ هدف روزانه ثبت شد — ${faDigits(total)} تست` : (total ? `${faDigits(total)} تست ثبت شده؛ تا هدف ${faDigits(getQuestionTarget())} تست ${faDigits(Math.max(0,getQuestionTarget()-total))} تست مانده` : 'امروز هنوز تستی ثبت نشده');
+}
+async function saveDailyQuestionCount(){
+  const input=document.getElementById('dailyQuestionInput');
+  const raw=(input?.value||'').trim().replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+  const total=Math.max(0,Math.floor(Number(raw)||0));
+  App.todayQuestions=total;
+  await storeSet('questions:'+ymd(App.viewDate),total);
+  renderDailyQuestions(); renderStats(); renderReport(); renderGoalsView();
+}
+async function clearDailyQuestions(){App.todayQuestions=0;await storeSet('questions:'+ymd(App.viewDate),0);renderDailyQuestions();renderStats();renderReport();renderGoalsView();}
+
+async function renderStats(){
+  const filled = App.todayGrid.filter(v=>v!==null).length;
+  document.getElementById('statLogged').textContent = faDigits(Math.round(filled/96*100))+'٪';
+  const studyMin = App.todayGrid.filter(v=>v==='study').length*15;
+  const wasteMin = App.todayGrid.filter(v=>v==='waste').length*15;
+  document.getElementById('statStudy').textContent = hm(studyMin);
+  document.getElementById('statWaste').textContent = hm(wasteMin);
+  const continuity=await computeStudyContinuity();
+  const streakEl=document.getElementById('statStreak'); if(streakEl) streakEl.textContent=faDigits(continuity.streak);
+}
+async function clearToday(){
+  if (App.gridLocked){ setSaveStatus('⚠ جدول قفل است — اول قفل رو باز کن'); return; }
+  const prev = App.todayGrid;
+  App.todayGrid = new Array(96).fill(null);
+  const changes = [];
+  prev.forEach((from, idx)=>{ if (from !== null) changes.push({idx, from, to:null}); });
+  if (changes.length){
+    App.gridUndoStack.push(changes);
+    if (App.gridUndoStack.length > GRID_UNDO_LIMIT) App.gridUndoStack.shift();
+    App.gridRedoStack = [];
+  }
+  renderGrid(); renderStats(); renderQuickLogSelectors();
+  await storeSet('day:'+ymd(App.viewDate), App.todayGrid);
+  renderReport();
+}
+function armConfirm(btn, label, confirmLabel, action){
+  let armed = false, timer = null;
+  btn.textContent = label;
+  btn.onclick = async ()=>{
+    if (!armed){
+      armed = true; btn.textContent = confirmLabel; btn.classList.add('armed');
+      timer = setTimeout(()=>{ armed=false; btn.textContent=label; btn.classList.remove('armed'); }, 3000);
+    } else {
+      clearTimeout(timer); armed=false; btn.textContent=label; btn.classList.remove('armed');
+      await action();
+    }
+  };
+}
+async function resetAllData(){
+  try{
+    const dayKeys = await listKeysWithPrefix('day:');
+    const sessionKeys = await listKeysWithPrefix('sessions:');
+    const questionKeys = await listKeysWithPrefix('questions:');
+    const dayMetaKeys = await listKeysWithPrefix('daymeta:');
+    const fixedKeys = ['activities','goals','subjects','weeklyPlan','weeklyPlans','settings','dataVersion'];
+    const allKeys = [...dayKeys, ...sessionKeys, ...questionKeys, ...dayMetaKeys, ...fixedKeys];
+    if (hasClaudeStorage){
+      for (const k of allKeys){ try{ await window.storage.delete(k, false); }catch(e){} }
+    } else {
+      allKeys.forEach(k=>localStorage.removeItem(k));
+    }
+  } catch(e){}
+  StreakCacheVersion.count++;
+  _continuityCache=null; _questionStreakCache=null; _studyStreakCache=null; _bestHourCache=null;
+  App.activities = DEFAULT_ACTIVITIES.slice();
+  App.goals = defaultGoals();
+  App.subjects = [];
+  App.weeklyPlans = [];
+  App.settings = defaultSettings();
+  App.viewDate = new Date();
+  App.todayGrid = new Array(96).fill(null);
+  App.gridUndoStack = []; App.gridRedoStack = []; App.gridStroke = null;
+  App.todayQuestions = 0;
+  App.todayMeta = {note:'',completed:{}};
+  App.selectedActivity = null;
+  await storeSet('activities', App.activities);
+  await storeSet('goals', App.goals);
+  await storeSet('subjects', App.subjects);
+  await storeSet('weeklyPlans', App.weeklyPlans);
+  await storeSet('settings', App.settings);
+  renderAll();
+  setSaveStatus('برنامه بازنشانی شد ✓');
+}
+
+/* ---------------- timer (stopwatch) ---------------- */
+function renderTimerChips(){
+  const wrap = document.getElementById('timerChips');
+  wrap.innerHTML = '';
+  App.activities.forEach(a=>{
+    const c = document.createElement('div');
+    c.className = 'chip' + (App.timer.activityId===a.id ? ' selected':'');
+    c.innerHTML = `<span class="dot" style="background:${a.color}"></span>${a.name}`;
+    c.onclick = ()=>{ if(!App.timer.running){ App.timer.activityId=a.id; renderTimerChips(); updateTimerLabel(); } };
+    wrap.appendChild(c);
+  });
+}
+function updateTimerLabel(){
+  const a = App.timer.activityId ? actById(App.timer.activityId) : null;
+  const el = document.getElementById('timerActLabel');
+  if (!a){ el.textContent = 'فعالیتی انتخاب نشده'; return; }
+  el.textContent = 'در حال ثبت: '+a.name;
+}
+function fmtTimer(ms){
+  ms = Math.max(0, ms);
+  const s = Math.round(ms/1000);
+  const hh=Math.floor(s/3600), mm=Math.floor((s%3600)/60), ss=s%60;
+  return faDigits(pad2(hh))+':'+faDigits(pad2(mm))+':'+faDigits(pad2(ss));
+}
+function timerTick(){
+  const t = App.timer;
+  const runDelta = t.running ? (Date.now()-t.startedAt) : 0;
+  document.getElementById('timerDisplay').textContent = fmtTimer(t.elapsedMs + runDelta);
+}
+function timerPersist(){
+  const t=App.timer;
+  return storeSet('activeStopwatch',{
+    activityId:t.activityId||null,
+    running:!!t.running,
+    startedAt:Number(t.startedAt)||0,
+    elapsedMs:Number(t.elapsedMs)||0,
+    savedAt:Date.now()
+  });
+}
+function timerTotalMs(){
+  const t=App.timer;
+  return Math.max(0, (Number(t.elapsedMs)||0) + (t.running ? Date.now()-Number(t.startedAt||0) : 0));
+}
+function renderStopwatchButtons(){
+  const t=App.timer;
+  const start=document.getElementById('btnStart'), pause=document.getElementById('btnPause'), stop=document.getElementById('btnStop');
+  if(!start||!pause||!stop)return;
+  start.disabled=!!t.running;
+  pause.disabled=!t.running;
+  stop.disabled=timerTotalMs()<1000;
+}
+function timerTick(){
+  const ms=timerTotalMs();
+  const el=document.getElementById('timerDisplay');
+  if(el) el.textContent=fmtTimer(ms);
+  renderStopwatchButtons();
+}
+async function startTimer(){
+  if(!App.timer.activityId){ alertInline('اول یک فعالیت را انتخاب کن'); return; }
+  if(App.timer.running) return;
+  App.timer.running=true;
+  App.timer.startedAt=Date.now();
+  clearInterval(App.timer.intervalId);
+  App.timer.intervalId=setInterval(timerTick,500);
+  await timerPersist();
+  timerTick();
+}
+async function pauseTimer(){
+  const t=App.timer;
+  if(!t.running)return;
+  t.elapsedMs=timerTotalMs();
+  t.running=false;
+  t.startedAt=0;
+  clearInterval(t.intervalId);
+  t.intervalId=null;
+  await timerPersist();
+  timerTick();
+}
+async function stopTimer(){
+  const t=App.timer;
+  const total=timerTotalMs();
+  const activityId=t.activityId;
+  clearInterval(t.intervalId);
+  t.intervalId=null;
+  t.running=false;
+  t.startedAt=0;
+  t.elapsedMs=0;
+  await storeSet('activeStopwatch',null);
+  timerTick();
+  if(total>=60000 && activityId) await commitTimerSession(activityId,Math.round(total/60000));
+  else if(total>0) alertInline('مدت جلسه کمتر از یک دقیقه بود');
+}
+async function restoreStopwatch(){
+  const saved=await storeGet('activeStopwatch');
+  if(!saved || !saved.activityId)return;
+  App.timer={
+    activityId:saved.activityId,
+    running:!!saved.running,
+    startedAt:Number(saved.startedAt)||0,
+    elapsedMs:Number(saved.elapsedMs)||0,
+    intervalId:null
+  };
+  if(App.timer.running){
+    App.timer.intervalId=setInterval(timerTick,500);
+  }
+  updateTimerLabel();
+  timerTick();
+}
+function alertInline(msg){
+  const el=document.getElementById('timerActLabel');
+  const old=el.textContent;
+  el.textContent=msg; el.style.color='#E7A5B4';
+  setTimeout(()=>{el.textContent=old;el.style.color='';updateTimerLabel();},1800);
+}
+
+/* ---------------- session log storage ----------------
+   Every log path (timer, countdown, and the Today-tab quick log)
+   writes straight into the grid AND into the sessions:<date> log
+   (used by reports/goals). To guard against a fat-finger mistake
+   (e.g. hours typed into a minutes-sized value), every write:
+     1) keeps a snapshot of the grid it just changed, and
+     2) shows a PERSISTENT "لغو آخرین ثبت" control — it does NOT
+        auto-hide after a few seconds — visible from both the
+        Today tab and the Timer tab, until the person dismisses it
+        by undoing or by logging something else.
+   Only the single most recent log can be undone (LastAutoLog holds
+   one entry), which matches how the UI presents it. */
+async function appendSession(date, sessionObj){
+  const key='sessions:'+ymd(date);
+  const list=(await storeGet(key))||[];
+  list.push(sessionObj);
+  await storeSet(key, list);
+}
+async function logDurationEndingNow(activityId, minutes){
+  if (!sameDay(App.viewDate, new Date())){
+    App.viewDate=new Date();
+    await loadDayIntoState(App.viewDate);
+  }
+  const now=new Date();
+  const nowIdx=Math.min(95, now.getHours()*4+Math.floor(now.getMinutes()/15));
+  const quarters=Math.max(1, Math.round(minutes/15));
+  const startIdx=Math.max(0, nowIdx-quarters+1);
+  for (let i=startIdx; i<=nowIdx; i++){ App.todayGrid[i]=activityId; }
+  App.gridUndoStack=[]; App.gridRedoStack=[];
+  await storeSet('day:'+ymd(App.viewDate), App.todayGrid);
+  renderGrid(); renderStats(); renderDateNav();
+}
+let LastAutoLog=null;
+function showLastLogUndo(info){
+  LastAutoLog=info;
+  const a=actById(info.activityId);
+  const msg=`${faDigits(info.minutes)} دقیقه برای «${a?a.name:'فعالیت'}» ثبت شد.`;
+  const bt=document.getElementById('quickLogUndoText'), bb=document.getElementById('btnUndoQuickLog');
+  if(bt){ bt.textContent=msg; bt.style.display='block'; }
+  if(bb){ bb.style.display='inline-block'; }
+  const s=document.getElementById('stopConfirmText'); if(s) s.textContent=msg;
+  const c=document.getElementById('countdownConfirmText'); if(c) c.textContent=msg;
+  ['stopConfirmCard','countdownConfirmCard'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.style.display='block';
+  });
+}
+function hideLastLogUndo(){
+  const bt=document.getElementById('quickLogUndoText'); if(bt) bt.style.display='none';
+  const bb=document.getElementById('btnUndoQuickLog'); if(bb) bb.style.display='none';
+  ['stopConfirmCard','countdownConfirmCard'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.style.display='none';
+  });
+}
+async function commitTimerSession(activityId, minutes){
+  const prevGrid=App.todayGrid.slice();
+  const viewDate=App.viewDate;
+  await logDurationEndingNow(activityId, minutes);
+  await appendSession(viewDate, {ts:Date.now(), activityId, minutes});
+  renderGoalsView();
+  showLastLogUndo({prevGrid, viewDate, activityId, minutes});
+}
+async function commitDirectLog(activityId, minutes){
+  const prevGrid=App.todayGrid.slice();
+  const viewDate=App.viewDate;
+  let quarters=Math.max(1, Math.round(minutes/15));
+  for (let i=0; i<96 && quarters>0; i++){
+    if (App.todayGrid[i]===null){ App.todayGrid[i]=activityId; quarters--; }
+  }
+  App.gridUndoStack=[]; App.gridRedoStack=[];
+  await storeSet('day:'+ymd(viewDate), App.todayGrid);
+  renderGrid(); renderStats();
+  await appendSession(viewDate, {ts:Date.now(), activityId, minutes, q:null});
+  renderReport(); renderQuickLogSelectors(); renderGoalsView();
+  showLastLogUndo({prevGrid, viewDate, activityId, minutes});
+}
+async function undoLastAutoLog(){
+  const log=LastAutoLog; if(!log) return;
+  await storeSet('day:'+ymd(log.viewDate), log.prevGrid);
+  if(sameDay(App.viewDate, log.viewDate)){
+    App.todayGrid=log.prevGrid;
+    App.gridUndoStack=[]; App.gridRedoStack=[];
+    renderGrid(); renderStats();
+  }
+  const key='sessions:'+ymd(log.viewDate);
+  const list=(await storeGet(key))||[];
+  list.pop();
+  await storeSet(key, list);
+  LastAutoLog=null;
+  hideLastLogUndo();
+  renderReport(); renderGoalsView();
+}
+
+/* ---------------- persistent countdown ---------------- */
+let Countdown={
+  activityId:null,running:false,startedAt:0,elapsedMs:0,
+  durationMs:0,remainingMs:0,targetAt:0,intervalId:null,
+  pendingRecord:null
+};
+function cdRemaining(){
+  return Countdown.running
+    ? Math.max(0,Countdown.targetAt-Date.now())
+    : Math.max(0,Countdown.remainingMs);
+}
+function fmtCountdown(ms){
+  const total=Math.floor(Math.max(0,ms)/1000);
+  return pad2(Math.floor(total/3600))+':'+pad2(Math.floor((total%3600)/60))+':'+pad2(total%60);
+}
+async function saveCountdown(){
+  const c={...Countdown}; delete c.intervalId; delete c.pendingRecord;
+  await storeSet('activeCountdown',c);
+}
+function renderCountdown(){
+  const d=document.getElementById('countdownDisplay'), st=document.getElementById('countdownStatus');
+  if(!d)return;
+  d.textContent=faDigits(fmtCountdown(cdRemaining()));
+  if(st)st.textContent=Countdown.running?'در حال شمارش…':(Countdown.remainingMs>0?'متوقف موقت':'آماده‌ی شروع');
+  const a=document.getElementById('btnCountdownStart'),p=document.getElementById('btnCountdownPause'),x=document.getElementById('btnCountdownStop');
+  if(a)a.disabled=Countdown.running;
+  if(p)p.disabled=!Countdown.running;
+  if(x)x.disabled=!(Countdown.running||Countdown.remainingMs>0);
+}
+function nativeCall(method,...args){
+  try{
+    const b=window.AndroidBridge||window.Android;
+    if(b&&typeof b[method]==='function')return b[method](...args);
+  }catch(e){}
+}
+async function requestNotificationPermission(){
+  try{
+    if('Notification' in window && Notification.permission==='default') await Notification.requestPermission();
+  }catch(e){}
+}
+function showTimerNotification(title,body){
+  nativeCall('showTimerNotification',title,body);
+  try{if('Notification' in window&&Notification.permission==='granted')new Notification(title,{body,tag:'timegrid-timer'});}catch(e){}
+}
+function scheduleTimerNative(at,title,body){nativeCall('scheduleTimerNotification',String(at),title,body);}
+function cancelTimerNative(){nativeCall('cancelTimerNotification');}
+function playTimerAlarm(){
+  try{
+    const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+    const ac=new AC();
+    [0,.35,.7].forEach((delay,i)=>{
+      const o=ac.createOscillator(),g=ac.createGain();
+      o.type='sine';o.frequency.value=i===1?880:660;
+      g.gain.setValueAtTime(.0001,ac.currentTime+delay);
+      g.gain.exponentialRampToValueAtTime(.32,ac.currentTime+delay+.03);
+      g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+delay+.28);
+      o.connect(g).connect(ac.destination);o.start(ac.currentTime+delay);o.stop(ac.currentTime+delay+.3);
+    });
+  }catch(e){}
+}
+async function startCountdown(){
+  if(!App.timer.activityId){ alertInline('اول یک فعالیت را انتخاب کن'); return; }
+  let duration;
+  if(Countdown.remainingMs>0 && !Countdown.running){
+    duration=Countdown.remainingMs;
+  }else{
+    const h=Math.max(0,parseInt(document.getElementById('countdownHours')?.value||0,10)||0);
+    const m=Math.max(0,Math.min(59,parseInt(document.getElementById('countdownMinutes')?.value||0,10)||0));
+    const s=Math.max(0,Math.min(59,parseInt(document.getElementById('countdownSeconds')?.value||0,10)||0));
+    duration=(h*3600+m*60+s)*1000;
+  }
+  if(duration<1000){alertInline('برای شمارش معکوس حداقل یک ثانیه تعیین کن');return;}
+  Countdown.durationMs=Countdown.durationMs||duration;
+  Countdown.remainingMs=duration;
+  Countdown.activityId=App.timer.activityId||null;
+  Countdown.running=true;
+  Countdown.startedAt=Date.now();
+  Countdown.targetAt=Date.now()+duration;
+  clearInterval(Countdown.intervalId);
+  Countdown.intervalId=setInterval(updateCountdown,250);
+  await saveCountdown();await requestNotificationPermission();
+  scheduleTimerNative(Countdown.targetAt,'⏰ TimeGrid','زمان شمارش معکوس تمام شد. بیا و گزارشت رو بنویس.');
+  updateCountdown();
+}
+async function pauseCountdown(){
+  if(!Countdown.running)return;
+  Countdown.remainingMs=cdRemaining();
+  Countdown.running=false;Countdown.startedAt=0;Countdown.targetAt=0;
+  clearInterval(Countdown.intervalId);Countdown.intervalId=null;
+  cancelTimerNative();await saveCountdown();renderCountdown();
+}
+async function stopCountdown(){
+  const elapsed=Countdown.durationMs-cdRemaining();
+  if(elapsed<1000)return;
+  const aid=Countdown.activityId;
+  Countdown.remainingMs=0;Countdown.running=false;Countdown.startedAt=0;Countdown.targetAt=0;
+  clearInterval(Countdown.intervalId);Countdown.intervalId=null;cancelTimerNative();
+  await storeSet('activeCountdown',null);
+  const mins=Math.max(1,Math.round(elapsed/60000));
+  renderCountdown();
+  if(aid) await commitTimerSession(aid,mins);
+}
+async function completeCountdown(){
+  const mins=Math.max(1,Math.round(Countdown.durationMs/60000));
+  const aid=Countdown.activityId;
+  Countdown.running=false;Countdown.remainingMs=0;Countdown.targetAt=0;
+  clearInterval(Countdown.intervalId);Countdown.intervalId=null;
+  await storeSet('activeCountdown',null);cancelTimerNative();playTimerAlarm();
+  showTimerNotification('⏰ TimeGrid','زمان مطالعه تمام شد و در جدول ثبت شد.');
+  renderCountdown();
+  if(aid) await commitTimerSession(aid,mins);
+}
+async function updateCountdown(){
+  if(Countdown.running&&cdRemaining()<=0){await completeCountdown();return;}
+  renderCountdown();
+}
+async function restoreCountdown(){
+  const saved=await storeGet('activeCountdown');
+  if(!saved||!saved.durationMs)return;
+  Countdown={...Countdown,...saved,intervalId:null,pendingRecord:null};
+  if(Countdown.running){
+    if(Countdown.targetAt<=Date.now()){await completeCountdown();return;}
+    Countdown.intervalId=setInterval(updateCountdown,250);
+    scheduleTimerNative(Countdown.targetAt,'⏰ TimeGrid','زمان شمارش معکوس تمام شد. بیا و گزارشت رو بنویس.');
+  }
+  renderCountdown();
+}
+
+/* quick numeric entry, right inside the Today grid view — just a total
+   hour count for the viewed day; it fills into empty quarters wherever
+   they are, no need to think about specific clock hours. */
+function renderQuickLogSelectors(){
+  const sel = document.getElementById('quickAct');
+  if (!sel) return;
+  sel.innerHTML = App.activities.map(a=>`<option value="${a.id}">${a.name}</option>`).join('');
+}
+let quickLogConfirmArmed=false, quickLogConfirmTimer=null;
+async function quickLog(){
+  const act = document.getElementById('quickAct').value;
+  const hoursInput = document.getElementById('quickHours');
+  const btn = document.getElementById('btnQuickLog');
+  const hours = parseFloat(hoursInput.value);
+  if (!hours || hours<=0){ setSaveStatus('⚠ اول تعداد ساعت رو وارد کن'); return; }
+  if (hours>24){ setSaveStatus('⚠ عدد وارد شده از یک شبانه‌روز بیشتره — دوباره چک کن'); return; }
+  if (App.gridLocked){ setSaveStatus('⚠ جدول قفل است — اول قفل رو باز کن'); return; }
+  // Guard against a fat-finger entry (e.g. hours typed where minutes were
+  // meant): anything over 3 hours needs a second tap within a few seconds.
+  if (hours>3 && !quickLogConfirmArmed){
+    quickLogConfirmArmed=true;
+    const original=btn.textContent;
+    btn.textContent=`مطمئنی؟ ${faDigits(hours)} ساعت — برای ثبت دوباره بزن`;
+    clearTimeout(quickLogConfirmTimer);
+    quickLogConfirmTimer=setTimeout(()=>{ quickLogConfirmArmed=false; btn.textContent=original; }, 5000);
+    return;
+  }
+  quickLogConfirmArmed=false; clearTimeout(quickLogConfirmTimer);
+  btn.textContent='افزودن به جدول امروز';
+  await commitDirectLog(act, Math.round(hours*60));
+  hoursInput.value = '';
+}
+
+/* ---------------- activities management ---------------- */
+function renderActivitiesList(){
+  const wrap = document.getElementById('actList');
+  wrap.innerHTML = '';
+  App.activities.forEach(a=>{
+    const row = document.createElement('div');
+    row.className = 'actrow';
+    row.innerHTML = `
+      <input type="color" class="swatch" value="${a.color}" style="padding:0;border:none;">
+      <div class="name">${a.name}</div>
+      <button class="iconbtn" title="حذف">✕</button>`;
+    const colorInput = row.querySelector('input[type=color]');
+    colorInput.oninput = async ()=>{ a.color = colorInput.value; await storeSet('activities', App.activities); renderAll(); };
+    row.querySelector('.iconbtn').onclick = async ()=>{
+      if (App.activities.length<=1) return;
+      App.activities = App.activities.filter(x=>x.id!==a.id);
+      await storeSet('activities', App.activities);
+      if (App.selectedActivity===a.id) App.selectedActivity=null;
+      renderAll();
+    };
+    wrap.appendChild(row);
+  });
+}
+async function addActivity(){
+  const nameEl = document.getElementById('newActName');
+  const colorEl = document.getElementById('newActColor');
+  const name = nameEl.value.trim();
+  if (!name) return;
+  const id = 'a'+Date.now();
+  App.activities.push({id, name, color: colorEl.value});
+  await storeSet('activities', App.activities);
+  nameEl.value='';
+  renderAll();
+}
+
+/* ---------------- study subjects + chapters ---------------- */
+function renderSubjectsList(){
+  const wrap = document.getElementById('subjectList');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  if (!App.subjects.length){
+    wrap.innerHTML = `<div class="muted" style="font-size:12px;">هنوز درسی اضافه نکردی — مثلاً روان‌پزشکی، مغزواعصاب، پاتولوژی...</div>`;
+    return;
+  }
+  App.subjects.forEach(s=>{
+    const row = document.createElement('div');
+    row.className = 'subjectrow';
+    row.style.flexWrap = 'wrap';
+    const chapters = s.chapters||[];
+    row.innerHTML = `
+      <div class="sname">${g_esc(s.name)}</div>
+      <button class="iconbtn" title="حذف درس">✕</button>
+      <div style="flex-basis:100%;"></div>
+      <div class="chips" style="padding:4px 0;">
+        ${chapters.map(c=>`<span class="chip" style="cursor:default;padding:5px 9px;font-size:11.5px;" data-chid="${c.id}">${g_esc(c.name)} <b class="chdel" style="margin-right:4px;cursor:pointer;color:var(--rose);">✕</b></span>`).join('')}
+      </div>
+      <div class="row" style="flex-basis:100%;gap:6px;">
+        <input type="text" class="newChapterName" placeholder="فصل جدید" style="flex:1;">
+        <button class="btn secondary addChapterBtn" style="width:auto;padding:7px 12px;font-size:12px;">افزودن فصل</button>
+      </div>`;
+    row.querySelector('.iconbtn').onclick = async ()=>{
+      App.subjects = App.subjects.filter(x=>x.id!==s.id);
+      await storeSet('subjects', App.subjects);
+      renderSubjectsList(); renderWeeklyPlanList();
+    };
+    row.querySelectorAll('.chdel').forEach(btn=>{
+      btn.onclick = async ()=>{
+        const chid = btn.closest('[data-chid]').dataset.chid;
+        s.chapters = (s.chapters||[]).filter(c=>c.id!==chid);
+        await storeSet('subjects', App.subjects);
+        renderSubjectsList(); renderWeeklyPlanList();
+      };
+    });
+    row.querySelector('.addChapterBtn').onclick = async ()=>{
+      const inp = row.querySelector('.newChapterName');
+      const name = inp.value.trim();
+      if (!name) return;
+      s.chapters = s.chapters||[];
+      s.chapters.push({id:'c'+Date.now(), name});
+      await storeSet('subjects', App.subjects);
+      renderSubjectsList(); renderWeeklyPlanList();
+    };
+    wrap.appendChild(row);
+  });
+}
+async function addSubject(){
+  const nameEl = document.getElementById('newSubjectName');
+  const name = nameEl.value.trim();
+  if (!name) return;
+  App.subjects.push({id:'s'+Date.now(), name, chapters:[]});
+  await storeSet('subjects', App.subjects);
+  nameEl.value = '';
+  renderSubjectsList(); renderWeeklyPlanList();
+}
+
+/* ---------------- weekly subject plan (multiple subjects + chapters per day) ---------------- */
+const WEEKDAY_ORDER = [6,0,1,2,3,4,5]; // Sat..Fri
+function normalizeWeekDay(dayVal){
+  if (!dayVal) return {items:[]};
+  if (Array.isArray(dayVal.items)) return {items:dayVal.items};
+  // migrate old one-subject/one-chapter format
+  if (dayVal.subjectId) return {items:[{subjectId:dayVal.subjectId, chapterIds:dayVal.chapterId?[dayVal.chapterId]:[]} ]};
+  return {items:[]};
+}
+function planDayLabel(dayVal){
+  const d=normalizeWeekDay(dayVal), parts=[];
+  d.items.forEach(it=>{
+    const s=subjById(it.subjectId); if(!s) return;
+    const chapters=(it.chapterIds||[]).map(id=>chapterById(it.subjectId,id)).filter(Boolean);
+    parts.push(chapters.length ? `${s.name} — ${chapters.map(c=>c.name).join('، ')}` : s.name);
+  });
+  return parts.join(' | ');
+}
+function renderWeeklyPlanList(){
+  const wrap=document.getElementById('weeklyPlanList'); if(!wrap) return;
+  if(!App.weeklyPlans.length){wrap.innerHTML=`<div class="muted" style="font-size:12px;">هنوز هیچ هفته‌ای اضافه نکردی — از بالا تاریخ شروع شنبه را وارد کن.</div>`;return;}
+  wrap.innerHTML='';
+  App.weeklyPlans.slice().sort((a,b)=>a.startDate<b.startDate?1:-1).forEach(week=>{
+    const start=localDateFromYmd(week.startDate), end=addDays(start,6), box=document.createElement('div');
+    box.style.cssText='border:1px solid var(--line);border-radius:var(--radius-sm);padding:10px;margin-bottom:10px;';
+    box.innerHTML=`<div class="row" style="margin-bottom:8px;"><div style="font-weight:700;font-size:12.5px;">${weekLabel(start,end)}</div><button class="iconbtn delWeekBtn">✕</button></div>`;
+    WEEKDAY_ORDER.forEach(dow=>{
+      const day=normalizeWeekDay(week.days[dow]); week.days[dow]=day;
+      const dayBox=document.createElement('div'); dayBox.style.cssText='border-top:1px solid var(--line);padding:9px 0;';
+      dayBox.innerHTML=`<div class="row" style="margin-bottom:7px;"><div class="dname">${JWEEK[dow]}</div><button class="iconbtn addPlanItem" style="font-size:11px;">＋ درس</button></div><div class="planItems"></div>`;
+      const itemsWrap=dayBox.querySelector('.planItems');
+      const renderItems=()=>{
+        itemsWrap.innerHTML='';
+        if(!day.items.length) itemsWrap.innerHTML='<div class="muted" style="font-size:10.5px;">برای این روز هنوز درسی برنامه‌ریزی نشده.</div>';
+        day.items.forEach((it,idx)=>{
+          const s=subjById(it.subjectId), row=document.createElement('div'); row.style.cssText='margin-bottom:8px;padding:8px;border:1px solid var(--line);border-radius:8px;';
+          row.innerHTML=`<div class="row" style="gap:6px;margin-bottom:6px;"><select class="planSubjectSel" style="flex:1;"><option value="">— انتخاب درس —</option>${App.subjects.map(x=>`<option value="${x.id}" ${it.subjectId===x.id?'selected':''}>${g_esc(x.name)}</option>`).join('')}</select><button class="iconbtn delPlanItem" title="حذف درس">✕</button></div><div class="chapterChecks" style="display:flex;flex-wrap:wrap;gap:5px;"></div>`;
+          const cs=row.querySelector('.chapterChecks');
+          if(!s) cs.innerHTML='<span class="muted" style="font-size:10.5px;">اول یک درس انتخاب کن.</span>';
+          else if(!(s.chapters||[]).length) cs.innerHTML='<span class="muted" style="font-size:10.5px;">برای این درس فصلی تعریف نشده.</span>';
+          else s.chapters.forEach(c=>{
+            const lab=document.createElement('label'); lab.style.cssText='font-size:10.5px;border:1px solid var(--line);border-radius:7px;padding:4px 6px;display:flex;align-items:center;gap:4px;';
+            lab.innerHTML=`<input type="checkbox" ${ (it.chapterIds||[]).includes(c.id)?'checked':''}>${g_esc(c.name)}`;
+            lab.querySelector('input').onchange=async e=>{it.chapterIds=Array.from(cs.querySelectorAll('input:checked')).map(x=>x.closest('label').textContent); it.chapterIds=(s.chapters||[]).filter(ch=>Array.from(cs.querySelectorAll('input:checked')).some(x=>x.closest('label').textContent===ch.name)).map(ch=>ch.id); await saveWeeklyPlans(); renderWeeklyPlanList(); renderPlanBanner();};
+            cs.appendChild(lab);
+          });
+          row.querySelector('.planSubjectSel').onchange=async e=>{it.subjectId=e.target.value||null;it.chapterIds=[];await saveWeeklyPlans(); renderWeeklyPlanList(); renderPlanBanner();};
+          row.querySelector('.delPlanItem').onclick=async()=>{day.items.splice(idx,1);await saveWeeklyPlans(); renderWeeklyPlanList(); renderPlanBanner();};
+          itemsWrap.appendChild(row);
+        });
+      };
+      dayBox.querySelector('.addPlanItem').onclick=async()=>{day.items.push({subjectId:null,chapterIds:[]});await saveWeeklyPlans(); renderWeeklyPlanList(); renderPlanBanner();};
+      renderItems(); box.appendChild(dayBox);
+    });
+    box.querySelector('.delWeekBtn').onclick=async()=>{App.weeklyPlans=App.weeklyPlans.filter(w=>w.id!==week.id);await saveWeeklyPlans(); renderWeeklyPlanList(); renderPlanBanner();};
+    wrap.appendChild(box);
+  });
+}
+function isLeapJalali(y){
+  const a=j2g(y,12,30); return a[2]===30;
+}
+function daysInJalaliMonth(jy,jm){
+  return jm<=6?31:(jm<=11?30:(isLeapJalali(jy)?30:29));
+}
+function saturdayOf(date){
+  const d=new Date(date); d.setHours(0,0,0,0);
+  const offset=(d.getDay()-6+7)%7;
+  return addDays(d,-offset);
+}
+
+/* ---------------- shared modal + jalali month header ---------------- */
+function showModal(html){
+  document.getElementById('modalCardBody').innerHTML=html;
+  document.getElementById('modalOverlay').style.display='flex';
+}
+function hideModal(){
+  document.getElementById('modalOverlay').style.display='none';
+}
+// Builds a header with a close button, prev/next arrows, and month+year selects.
+// idPrefix distinguishes elements when multiple calendars exist in the codebase.
+function jalaliHeaderHTML(jy, jm, idPrefix, title){
+  const yearOptions=[]; for(let y=jy-3;y<=jy+5;y++) yearOptions.push(`<option value="${y}" ${y===jy?'selected':''}>${faDigits(y)}</option>`);
+  return `<div class="row" style="margin-bottom:10px;"><h3 style="margin:0;">${title}</h3><button type="button" class="iconbtn" id="${idPrefix}Close">✕</button></div>
+  <div class="jcal-head">
+    <button type="button" class="jcal-nav" id="${idPrefix}Prev">‹</button>
+    <div style="display:flex;gap:6px;">
+      <select id="${idPrefix}MonthSel" class="jcal-sel">${JMONTHS.map((m,i)=>`<option value="${i+1}" ${i+1===jm?'selected':''}>${m}</option>`).join('')}</select>
+      <select id="${idPrefix}YearSel" class="jcal-sel">${yearOptions.join('')}</select>
+    </div>
+    <button type="button" class="jcal-nav" id="${idPrefix}Next">›</button>
+  </div>`;
+}
+function wireJalaliHeader(idPrefix, get, set, onChange){
+  document.getElementById(idPrefix+'Close').onclick=hideModal;
+  document.getElementById(idPrefix+'Prev').onclick=()=>{ let {jy,jm}=get(); jm--; if(jm<1){jm=12;jy--;} set(jy,jm); onChange(); };
+  document.getElementById(idPrefix+'Next').onclick=()=>{ let {jy,jm}=get(); jm++; if(jm>12){jm=1;jy++;} set(jy,jm); onChange(); };
+  document.getElementById(idPrefix+'MonthSel').onchange=e=>{ let {jy}=get(); set(jy, +e.target.value); onChange(); };
+  document.getElementById(idPrefix+'YearSel').onchange=e=>{ let {jm}=get(); set(+e.target.value, jm); onChange(); };
+}
+
+/* ---------------- weekly-plan week picker ---------------- */
+const WC={jy:null,jm:null};
+function weekAlreadyAdded(saturday){
+  const s=ymd(saturday);
+  return App.weeklyPlans.some(w=>String(w.startDate)===s);
+}
+async function addWeekFromDate(saturday){
+  if(weekAlreadyAdded(saturday)){
+    setSaveStatus('این هفته قبلاً به برنامه اضافه شده');
+    return;
+  }
+  App.weeklyPlans.push({id:'w'+Date.now(),startDate:ymd(saturday),days:{}});
+  await saveWeeklyPlans();
+  renderWeeklyPlanList(); renderPlanBanner();
+  hideModal();
+  setSaveStatus(`هفته از شنبه ${jalaliLabel(saturday).full} اضافه شد ✓`);
+}
+function openWeekCalendar(){
+  const today=new Date(); [WC.jy,WC.jm]=g2j(today.getFullYear(),today.getMonth()+1,today.getDate());
+  showModal(weekCalendarHTML()); wireWeekCalendar();
+}
+function weekCalendarHTML(){
+  const jy=WC.jy, jm=WC.jm;
+  const daysInMonth=daysInJalaliMonth(jy,jm);
+  const [gy,gm,gd]=j2g(jy,jm,1); const monthFirst=new Date(gy,gm-1,gd);
+  const monthLast=addDays(monthFirst, daysInMonth-1);
+  const today=new Date(); today.setHours(0,0,0,0);
+  let html=jalaliHeaderHTML(jy,jm,'wc','انتخاب هفته');
+  html+=`<div class="jcal-shortcuts">
+    <button type="button" class="btn secondary" id="wcThisWeek">هفته جاری</button>
+    <button type="button" class="btn secondary" id="wcNextWeek">هفته بعد</button>
+  </div>
+  <div class="muted" style="font-size:10.5px;margin-bottom:6px;">روی هر روز از هفته‌ای که می‌خوای بزن — کل اون هفته (شنبه تا جمعه) اضافه می‌شه.</div>
+  <div class="jcal-dow">${['ش','ی','د','س','چ','پ','ج'].map(x=>`<span>${x}</span>`).join('')}</div>`;
+  let rowStart=saturdayOf(monthFirst);
+  while(rowStart<=monthLast){
+    const sat=new Date(rowStart);
+    const added=weekAlreadyAdded(sat);
+    html+=`<div class="jcal-week ${added?'added':''}" data-sat="${ymd(sat)}">`;
+    for(let i=0;i<7;i++){
+      const d=addDays(sat,i);
+      const [dy,dm,dd]=g2j(d.getFullYear(),d.getMonth()+1,d.getDate());
+      const out = dm!==jm;
+      const isToday = d.getTime()===today.getTime();
+      html+=`<div class="jcal-day ${out?'out':''} ${isToday&&!out?'today':''}">${faDigits(dd)}</div>`;
+    }
+    html+='</div>';
+    if(added) html+=`<div class="jcal-added-badge">✓ این هفته در لیست پایین اضافه شده</div>`;
+    rowStart=addDays(rowStart,7);
+  }
+  return html;
+}
+function wireWeekCalendar(){
+  wireJalaliHeader('wc', ()=>({jy:WC.jy,jm:WC.jm}), (jy,jm)=>{WC.jy=jy;WC.jm=jm;}, ()=>{ showModal(weekCalendarHTML()); wireWeekCalendar(); });
+  document.getElementById('wcThisWeek').onclick=()=>addWeekFromDate(saturdayOf(new Date()));
+  document.getElementById('wcNextWeek').onclick=()=>addWeekFromDate(addDays(saturdayOf(new Date()),7));
+  document.querySelectorAll('.jcal-week').forEach(row=>{
+    row.onclick=()=>{ if(!row.classList.contains('added')) addWeekFromDate(localDateFromYmd(row.dataset.sat)); };
+  });
+}
+
+/* ---------------- "today" tab: jump to any date ---------------- */
+const DJ={jy:null,jm:null};
+function openDateJump(){
+  [DJ.jy,DJ.jm]=g2j(App.viewDate.getFullYear(),App.viewDate.getMonth()+1,App.viewDate.getDate());
+  showModal(dateJumpHTML()); wireDateJump();
+}
+function dateJumpHTML(){
+  const jy=DJ.jy, jm=DJ.jm;
+  const daysInMonth=daysInJalaliMonth(jy,jm);
+  const [gy,gm,gd]=j2g(jy,jm,1); const first=new Date(gy,gm-1,gd);
+  const firstDow=(first.getDay()+1)%7;
+  const today=new Date(); today.setHours(0,0,0,0);
+  const [cjy,cjm,cjd]=g2j(App.viewDate.getFullYear(),App.viewDate.getMonth()+1,App.viewDate.getDate());
+  let html=jalaliHeaderHTML(jy,jm,'dj','رفتن به تاریخ');
+  html+=`<div class="jcal-shortcuts"><button type="button" class="btn secondary" id="djToday">امروز</button></div>`;
+  html+=`<div class="jcal-dow">${['ش','ی','د','س','چ','پ','ج'].map(x=>`<span>${x}</span>`).join('')}</div>`;
+  html+=`<div class="jcal-daygrid">`;
+  for(let i=0;i<firstDow;i++) html+='<span></span>';
+  for(let d=1;d<=daysInMonth;d++){
+    const [gyy,gmm,gdd]=j2g(jy,jm,d); const dt=new Date(gyy,gmm-1,gdd);
+    const isToday = dt.getTime()===today.getTime();
+    const isSelected = jy===cjy && jm===cjm && d===cjd;
+    html+=`<button type="button" class="jcal-daybtn ${isToday?'today':''} ${isSelected?'selected':''}" data-d="${d}">${faDigits(d)}</button>`;
+  }
+  html+='</div>';
+  return html;
+}
+async function goToViewDate(date){
+  App.viewDate=date;
+  await loadDayIntoState(App.viewDate);
+  renderDateNav(); renderGrid(); renderStats(); renderDailyQuestions(); renderDailyNote(); renderQuickLogSelectors(); renderPlanBanner();
+  hideModal();
+}
+function wireDateJump(){
+  wireJalaliHeader('dj', ()=>({jy:DJ.jy,jm:DJ.jm}), (jy,jm)=>{DJ.jy=jy;DJ.jm=jm;}, ()=>{ showModal(dateJumpHTML()); wireDateJump(); });
+  document.getElementById('djToday').onclick=()=>goToViewDate(new Date());
+  document.querySelectorAll('.jcal-daybtn').forEach(b=>{
+    b.onclick=()=>{ const [gyy,gmm,gdd]=j2g(DJ.jy,DJ.jm,+b.dataset.d); goToViewDate(new Date(gyy,gmm-1,gdd)); };
+  });
+}
+function weekPlanForDate(date){
+  const dstr=ymd(date);
+  return App.weeklyPlans.find(w=>{ const s=String(w.startDate); const e=ymd(addDays(localDateFromYmd(s),6)); return dstr>=s && dstr<=e; })||null;
+}
+function renderPlanBanner(){
+  const el=document.getElementById('planBanner');if(!el)return;const items=plannedChaptersForDate(App.viewDate);
+  if(!items.length){el.style.display='none';el.innerHTML='';return;}
+  const grouped={};items.forEach(it=>{(grouped[it.subjectId] ||= {name:it.subject,items:[]}).items.push(it);});
+  let html=`<div style="font-weight:800;margin-bottom:6px;">📌 برنامه مطالعه امروز</div>`;
+  Object.values(grouped).forEach(g=>{html+=`<div style="margin-top:7px;"><b>${g_esc(g.name)}</b></div>`;g.items.forEach(it=>{if(!it.chapterId){html+=`<div class="planchapter"><span>📚</span><span>${g_esc(it.chapter)}</span></div>`;return;}const done=isChapterDone(it.subjectId,it.chapterId);html+=`<label class="planchapter ${done?'done':''}" data-subject="${g_esc(it.subjectId)}" data-chapter="${g_esc(it.chapterId)}"><input type="checkbox" ${done?'checked':''}> <span>${g_esc(it.chapter)}</span></label>`;});});
+  html+=renderPlanProgress(items);el.style.display='block';el.innerHTML=html;
+  el.querySelectorAll('.planchapter input').forEach(cb=>cb.onchange=()=>{const r=cb.closest('.planchapter');togglePlannedChapter(r.dataset.subject,r.dataset.chapter,cb.checked);});
+}
+function summarize(grid){
+  const byAct = {};
+  grid.forEach(v=>{ if(v){ byAct[v]=(byAct[v]||0)+15; } });
+  return byAct;
+}
+function svgDonut(data, size, thickness){
+  const total = data.reduce((s,d)=>s+d.value,0) || 1;
+  const r = (size/2)-thickness/2-2, cx=size/2, cy=size/2, C=2*Math.PI*r;
+  let cum=0, segs='';
+  data.forEach(d=>{
+    if (d.value<=0) return;
+    const frac = d.value/total;
+    const dash = Math.max(frac*C-1.5,0), gap=C-dash;
+    segs += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${d.color}" stroke-width="${thickness}" stroke-dasharray="${dash} ${gap}" stroke-dashoffset="${-cum*C}" stroke-linecap="round" transform="rotate(-90 ${cx} ${cy})"/>`;
+    cum += frac;
+  });
+  return `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--paper-2)" stroke-width="${thickness}"/>
+    ${segs}</svg>`;
+}
+function svgLine(points, w, h, color){
+  if (!points.length) return '';
+  const max = Math.max(1, ...points.map(p=>p.y));
+  const stepX = w/(Math.max(points.length-1,1));
+  const coords = points.map((p,i)=>[i*stepX, h - (p.y/max)*(h-10) - 4]);
+  const path = coords.map((c,i)=> (i===0?'M':'L')+c[0].toFixed(1)+','+c[1].toFixed(1)).join(' ');
+  const dots = coords.map(c=>`<circle cx="${c[0].toFixed(1)}" cy="${c[1].toFixed(1)}" r="3" fill="${color}"/>`).join('');
+  const area = `M0,${h} `+coords.map(c=>`L${c[0].toFixed(1)},${c[1].toFixed(1)}`).join(' ')+` L${w},${h} Z`;
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" preserveAspectRatio="none">
+    <path d="${area}" fill="${color}" opacity="0.12"/>
+    <path d="${path}" fill="none" stroke="${color}" stroke-width="2.4"/>${dots}</svg>`;
+}
+function legendHTML(items){
+  const total = items.reduce((s,i)=>s+i.value,0) || 1;
+  return `<div class="legend">` + items.map(i=>`
+    <div class="legrow">
+      <span class="dot" style="background:${i.color}"></span>
+      <span class="lname">${i.name}</span>
+      <span class="lval">${hm(i.value)} · ${faDigits(Math.round(i.value/total*100))}٪</span>
+    </div>`).join('') + `</div>`;
+}
+/* actionable suggestion: how far ahead/behind the goal, and what to do about it */
+function progressSuggestion(totalMin, goalMin, periodEnd, unitLabel){
+  if (!goalMin) return '';
+  const today = new Date(); today.setHours(0,0,0,0);
+  const end = new Date(periodEnd); end.setHours(0,0,0,0);
+  const daysRemaining = end>=today ? Math.round((end-today)/86400000)+1 : 0;
+  const diffMin = goalMin - totalMin;
+  if (diffMin<=0){
+    return addressPrefix() + `<b>عالی!</b> به هدف ${unitLabel} رسیدی و حتی ${hm(-diffMin)} ساعت هم جلوتری. همین روند رو حفظ کن 👏`;
+  }
+  if (daysRemaining>0){
+    const perDay = diffMin/60/daysRemaining;
+    return addressPrefix() + `${faDigits((diffMin/60).toFixed(1))} ساعت با هدف ${unitLabel} فاصله داری. برای جبران، تا پایان این دوره روزی حدود <b>${faDigits(perDay.toFixed(1))} ساعت</b> مطالعه کن.`;
+  }
+  return addressPrefix() + `این دوره تموم شده و ${faDigits((diffMin/60).toFixed(1))} ساعت کمتر از هدف ${unitLabel} مطالعه کردی؛ سعی کن دوره‌ی بعد جبرانش کنی.`;
+}
+
+function renderReport(){
+  const body = document.getElementById('reportBody');
+  document.querySelectorAll('.subtabs button').forEach(b=>b.classList.toggle('active', b.dataset.r===App.reportTab));
+  if (App.reportTab==='daily') renderDailyReport(body);
+  else if (App.reportTab==='weekly') renderWeeklyReport(body);
+  else if (App.reportTab==='monthly') renderMonthlyReport(body);
+  else renderAnalysisReport(body);
+}
+async function renderAnalysisReport(body){
+  body.innerHTML = `<div class="card"><div class="muted">در حال محاسبه...</div></div>`;
+  const [hourData, dailyQ, continuity] = await Promise.all([
+    bestHourAnalysis(), dailyQuestionTrend(14), computeStudyContinuity()
+  ]);
+  const bars = hourData.buckets.map((v,h)=>{
+    const heightPct = hourData.max ? Math.round(v/hourData.max*100) : 0;
+    const isPeak = (h===hourData.bestStart || h===(hourData.bestStart+1)%24) && hourData.max>0;
+    return `<div class="hb ${isPeak?'peak':''}" style="height:${Math.max(heightPct,2)}%"></div>`;
+  }).join('');
+  const barLabels = hourData.buckets.map((v,h)=> h%3===0 ? `<div>${faDigits(pad2(h))}</div>` : `<div></div>`).join('');
+  const bestHourText = hourData.max>0
+    ? `بر اساس کل تاریخچه‌ات، بیشترین تمرکز مطالعه‌ت معمولاً بین ساعت <b>${faDigits(pad2(hourData.bestStart))}:۰۰</b> تا <b>${faDigits(pad2((hourData.bestStart+2)%24))}:۰۰</b> بوده.`
+    : 'هنوز داده‌ی کافی برای تشخیص بهترین ساعت مطالعه ثبت نشده.';
+
+  const qStreak=await computeQuestionStreak();
+  const qRows=dailyQ.map(d=>{const hit=d.total>=getQuestionTarget();const dt=new Date(d.date),j=g2j(dt.getFullYear(),dt.getMonth()+1,dt.getDate());return `<div class="legrow"><span class="lname mono" style="font-size:11px;">${faDigits(j[2])}/${faDigits(j[1])}</span><span class="lval" style="${hit?'color:#4F8A58;font-weight:700;':''}">${faDigits(d.total)} تست${hit?' ✓':''}</span></div>`;}).join('');
+  const quizHTML=`<div class="card" style="border-right:3px solid var(--amber);"><h3>گزارش تعداد سوال و تست زده شده</h3><div class="row" style="margin-bottom:8px;"><div><div class="muted" style="font-size:10.5px;">استریک سوال</div><div class="mono" style="font-size:25px;font-weight:800;color:var(--amber);">${faDigits(qStreak)} روز</div></div><div class="question-total ${dailyQ.at(-1)?.total>=getQuestionTarget()?'hit':''}">${faDigits(dailyQ.at(-1)?.total||0)}</div></div><div class="muted" style="font-size:10.5px;margin-bottom:8px;">روند ۱۴ روز اخیر · هدف هر روز حداقل ${faDigits(getQuestionTarget())} تست</div><div class="legend">${qRows||'<div class="muted">هنوز تستی ثبت نشده.</div>'}</div></div>`;
+
+  const analysisGreeting=firstName()?`<div class="insight" style="margin-bottom:12px;"><b>${g_esc(firstName())} جان</b>، این تحلیل بر اساس داده‌های ثبت‌شده‌ی مطالعه و تست‌های توست.</div>`:'';
+  body.innerHTML = `
+    ${analysisGreeting}
+    <div class="card" style="border-right:3px solid var(--accent);">
+      <h3>بهترین ساعت‌های مطالعه (کل تاریخچه)</h3>
+      <div class="hourbars">${bars}</div>
+      <div class="hourbars-labels">${barLabels}</div>
+      <div class="insight" style="margin-top:10px;">${bestHourText}</div>
+    </div>
+    ${quizHTML}
+    <div class="card" style="border-right:3px solid var(--accent);"><h3>استمرار مطالعه</h3><div class="statgrid"><div class="stat"><div class="v" style="color:var(--accent);">${faDigits(continuity.streak)}</div><div class="l">روز استمرار</div></div><div class="stat"><div class="v">${faDigits((continuity.minRequired/60).toFixed(2).replace(/\.00$/,''))}</div><div class="l">حداقل ساعت روزانه</div></div></div><div class="muted" style="font-size:10.5px;margin-top:8px;">کمتر از این مقدار در هر روز، استمرار را ریست می‌کند.</div></div>`;
+}
+
+async function renderDailyReport(body){
+  const byAct=summarize(App.todayGrid),items=App.activities.map(a=>({name:a.name,color:a.color,value:byAct[a.id]||0})).filter(i=>i.value>0),total=items.reduce((a,i)=>a+i.value,0),studyMin=byAct.study||0,goalMin=(App.goals.dailyHours||0)*60,pct=goalMin?Math.min(100,Math.round(studyMin/goalMin*100)):0;
+  const planned=plannedChaptersForDate(App.viewDate),cp=planned.filter(x=>x.chapterId),done=cp.filter(x=>isChapterDone(x.subjectId,x.chapterId));
+  const planHTML=planned.length?`<div class="card" style="border-right:3px solid var(--accent);"><h3>گزارش کامل برنامه‌ی مطالعاتی این روز</h3><div class="muted" style="font-size:11px;">${faDigits(done.length)} از ${faDigits(cp.length)} فصل انجام شده · ${faDigits(cp.length?Math.round(done.length/cp.length*100):0)}٪</div>${planned.map(x=>{const d=x.chapterId&&isChapterDone(x.subjectId,x.chapterId);return `<div class="report-plan-item ${d?'done':'missed'}">${d?'✓':'✕'} <b>${g_esc(x.subject)}</b> — ${g_esc(x.chapter)}${!d&&x.chapterId?' <span class="muted">· باید در روز دیگری جبران شود</span>':''}</div>`}).join('')}</div>`:'';
+  const noteHTML=App.todayMeta.note?`<div class="card"><h3>یادداشت این روز</h3><div style="white-space:pre-wrap;line-height:2;font-size:12px;">${g_esc(App.todayMeta.note)}</div></div>`:'';
+  body.innerHTML=`<div class="card"><h3>پراکندگی امروز — ${jalaliLabel(App.viewDate).full}</h3>${items.length?`<div class="donutwrap">${svgDonut(items,170,26)}<div class="donutcenter"><div class="n">${hm(total)}</div><div class="l">کل ثبت‌شده</div></div></div>${legendHTML(items)}`:`<div class="muted" style="text-align:center;padding:20px 0;">هنوز چیزی برای این روز ثبت نشده</div>`}</div><div class="card" style="border-right:3px solid var(--accent);"><h3>تمرکز روی مطالعه</h3><div class="row"><div class="mono" style="font-size:20px;font-weight:700;">${hm(studyMin)}</div><div class="muted" style="font-size:12px;">هدف: ${faDigits(App.goals.dailyHours)} ساعت</div></div><div class="barbg" style="margin-top:8px;"><div class="barfg" style="width:${pct}%;background:var(--accent);"></div></div><div class="insight" style="margin-top:10px;">${dailyInsight(studyMin,byAct,goalMin)}</div></div>${planHTML}${noteHTML}${await questionReportCard(App.viewDate)}${await continuityReportCard()}`;
+}
+async function questionReportCard(date){const total=await dailyQuestionTotal(date),streak=await computeQuestionStreak(),hit=total>=getQuestionTarget();return `<div class="card" style="border-right:3px solid var(--amber);"><h3>گزارش تعداد سوال و تست زده شده</h3><div class="row"><div><div class="muted" style="font-size:10.5px;">تست‌های امروز</div><div class="mono" style="font-size:24px;font-weight:800;${hit?'color:#4F8A58;':''}">${faDigits(total)} تست${hit?' ✓':''}</div></div><div style="text-align:left"><div class="muted" style="font-size:10.5px;">استریک سوالات (${faDigits(getQuestionTarget())}+)</div><div class="mono" style="font-size:22px;font-weight:800;color:var(--amber);">${faDigits(streak)} روز</div></div></div><div class="muted" style="font-size:10.5px;margin-top:8px;">هر روزی که حداقل ${faDigits(getQuestionTarget())} تست ثبت شود، یک روز به استریک سوالات اضافه می‌کند.</div></div>`;}
+
+async function continuityReportCard(){
+  const {streak,minRequired}=await computeStudyContinuity();
+  const hours=(minRequired/60);
+  const todayMin=await dailyStudyMinutes(new Date());
+  const preserved=todayMin>=minRequired;
+  return `<div class="card" style="border-right:3px solid var(--accent);"><h3>استمرار مطالعه</h3><div class="statgrid"><div class="stat"><div class="v" style="color:var(--accent);">${faDigits(streak)}</div><div class="l">روز استمرار</div></div><div class="stat"><div class="v">${faDigits(hours.toFixed(2).replace(/\.00$/,''))}</div><div class="l">حداقل ساعت روزانه</div></div><div class="stat"><div class="v" style="${preserved?'color:#4F8A58;':'color:var(--rose);'}">${preserved?'✓ حفظ شده':'× ریست شده'}</div><div class="l">وضعیت امروز</div></div></div><div class="muted" style="font-size:10.5px;margin-top:8px;">اگر حتی یک روز کمتر از ${faDigits(hours)} ساعت مطالعه داشته باشی، استمرار از نو محاسبه می‌شود.</div></div>`;
+}
+
+function dailyInsight(studyMin, byAct, goalMin){
+  const wasteMin = byAct['waste']||0;
+  let parts = [];
+  if (goalMin>0){
+    if (studyMin>=goalMin) parts.push(`<b>عالی!</b> به هدف روزانه مطالعه رسیدی یا از آن گذشتی.`);
+    else parts.push(`تا رسیدن به هدف روزانه <b>${hm(goalMin-studyMin)}</b> ساعت مطالعه دیگر لازم داری.`);
+  }
+  if (wasteMin>0) parts.push(`${hm(wasteMin)} ساعت هم صرف زمان تلف‌شده شده — جای بهبود هست.`);
+  if (!parts.length) parts.push('برای دیدن تحلیل، فعالیت‌های امروز را در جدول ثبت کن.');
+  return addressPrefix() + parts.join(' ');
+}
+
+async function weeklyPlanReport(start,end){
+  const rows=[];let total=0,done=0,missed=0,pending=0,d=new Date(start),today0=new Date();today0.setHours(0,0,0,0);
+  while(d<=end){const items=plannedChaptersForDate(d),j=jalaliLabel(d);for(const x of items){if(!x.chapterId)continue;total++;const meta=await storeGet('daymeta:'+ymd(d)),isDone=!!(meta?.completed?.[completedChapterKey(x.subjectId,x.chapterId)]),day0=new Date(d);day0.setHours(0,0,0,0);const status=isDone?'done':(day0<today0?'missed':'pending');if(status==='done')done++;else if(status==='missed')missed++;else pending++;rows.push(`<div class="report-plan-item ${status}">${status==='done'?'✓':status==='missed'?'✕':'…'} <b>${g_esc(j.weekday)}</b> · ${g_esc(x.subject)} — ${g_esc(x.chapter)} <span class="muted">· ${status==='done'?'خوانده شد':status==='missed'?'عقب افتاده':'در انتظار'}</span></div>`);}d=addDays(d,1);}
+  if(!rows.length)return '';return `<div class="card" style="border-right:3px solid var(--accent);"><h3>گزارش فصول برنامه‌ریزی‌شده هفته</h3><div class="statgrid"><div class="stat"><div class="v">${faDigits(done)}</div><div class="l">خوانده‌شده</div></div><div class="stat"><div class="v" style="color:var(--rose);">${faDigits(missed)}</div><div class="l">عقب‌افتاده</div></div><div class="stat"><div class="v" style="color:var(--amber);">${faDigits(pending)}</div><div class="l">باقی‌مانده</div></div></div>${rows.join('')}<div class="insight" style="margin-top:10px;">${addressPrefix()}از ${faDigits(total)} فصل برنامه‌ریزی‌شده، ${faDigits(done)} فصل انجام شده و ${faDigits(missed)} فصل از برنامه عقب افتاده است.</div></div>`;
+}
+
+async function renderWeeklyReport(body){
+  body.innerHTML = `<div class="card"><div class="muted">در حال محاسبه...</div></div>`;
+  const {start, end} = jalaliWeekRange(App.reportWeekAnchor);
+  const days = await loadDaysBetween(start, end);
+  const perDay = days.map(d=>({date:d.date, byAct: summarize(d.grid)}));
+  const studySeries = perDay.map(d=>({y:(d.byAct['study']||0)/60}));
+  const totalStudy = perDay.reduce((s,d)=>s+(d.byAct['study']||0),0);
+  const totalWaste = perDay.reduce((s,d)=>s+(d.byAct['waste']||0),0);
+  const weekGoalMin = (App.goals.weeklyHours||0)*60;
+
+  // previous week, for a week-over-week comparison
+  const prevStart = addDays(start,-7), prevEnd = addDays(end,-7);
+  const prevDays = await loadDaysBetween(prevStart, prevEnd);
+  const prevStudy = prevDays.reduce((s,d)=>s+(summarize(d.grid)['study']||0),0);
+  let compareLine = '';
+  if (prevStudy>0 || totalStudy>0){
+    const diff = totalStudy - prevStudy;
+    if (prevStudy===0 && totalStudy>0) compareLine = `این هفته ${hm(totalStudy)} ساعت مطالعه ثبت کردی — هفته‌ی قبل چیزی ثبت نشده بود.`;
+    else if (diff===0) compareLine = `این هفته دقیقاً به‌اندازه‌ی هفته‌ی قبل مطالعه کردی (${hm(totalStudy)} ساعت).`;
+    else {
+      const pct = Math.round(Math.abs(diff)/Math.max(prevStudy,1)*100);
+      compareLine = diff>0
+        ? `${hm(diff)} ساعت (${faDigits(pct)}٪) بیشتر از هفته‌ی قبل مطالعه کردی 👍`
+        : `${hm(-diff)} ساعت (${faDigits(pct)}٪) کمتر از هفته‌ی قبل مطالعه کردی.`;
+    }
+  }
+
+  // stacked columns
+  const maxDayTotal = Math.max(...perDay.map(d=>Object.values(d.byAct).reduce((a,b)=>a+b,0)), 60);
+  const cols = perDay.map(d=>{
+    const segs = App.activities.map(a=>{
+      const v = d.byAct[a.id]||0;
+      const h = (v/maxDayTotal*100);
+      return h>0 ? `<div class="seg" style="height:${h}%;background:${a.color}"></div>` : '';
+    }).join('');
+    return `<div class="stackcol">${segs}</div>`;
+  }).join('');
+  const dayLabels = perDay.map(d=>{
+    const dt = new Date(d.date);
+    return `<div>${JWEEK[dt.getDay()].slice(0,2)}</div>`;
+  }).join('');
+
+  const byActTotals = {};
+  perDay.forEach(d=>Object.entries(d.byAct).forEach(([k,v])=>byActTotals[k]=(byActTotals[k]||0)+v));
+  const items = App.activities.map(a=>({name:a.name,color:a.color,value:byActTotals[a.id]||0})).filter(i=>i.value>0);
+  const pct = weekGoalMin ? Math.min(100, Math.round(totalStudy/weekGoalMin*100)) : 0;
+  const weekQuestions=await questionDaysBetween(start,end), weekQTotal=weekQuestions.reduce((a,d)=>a+d.total,0), weekQDays=weekQuestions.filter(d=>d.total>=getQuestionTarget()).length, weekQStreak=await computeQuestionStreak();
+
+  const weeklyPlanHTML = await weeklyPlanReport(start,end);
+  body.innerHTML = navHTML('prevWeek','nextWeek','jumpThisWeek','هفته‌ی جاری', weekLabel(start,end), 'هفته‌ی شمسی (شنبه تا جمعه)') + `
+    ${weeklyPlanHTML}
+    <div class="card">
+      <h3>ترکیب فعالیت‌ها در این هفته</h3>
+      <div class="stackcol-wrap">${cols}</div>
+      <div class="stackcol-labels">${dayLabels}</div>
+    </div>
+    <div class="card" style="border-right:3px solid var(--accent);">
+      <h3>روند ساعت مطالعه (ساعت در روز)</h3>
+      ${svgLine(studySeries, 320, 110, 'var(--accent)')}
+      <div class="row" style="margin-top:8px;">
+        <div class="mono" style="font-size:18px;font-weight:700;">${hm(totalStudy)}</div>
+        <div class="muted" style="font-size:12px;">مجموع مطالعه هفته</div>
+      </div>
+      <div class="barbg" style="margin-top:6px;"><div class="barfg" style="width:${pct}%;background:var(--accent);"></div></div>
+      <div class="muted mono" style="font-size:11px;margin-top:4px;">${faDigits(pct)}٪ از هدف ${faDigits(App.goals.weeklyHours)} ساعته</div>
+    </div>
+    <div class="card" style="border-right:3px solid var(--amber);"><h3>گزارش تعداد سوال و تست زده شده</h3><div class="statgrid"><div class="stat"><div class="v">${faDigits(weekQTotal)}</div><div class="l">کل تست</div></div><div class="stat"><div class="v" style="color:#4F8A58;">${faDigits(weekQDays)}</div><div class="l">روزهای ${faDigits(getQuestionTarget())}+</div></div><div class="stat"><div class="v" style="color:var(--amber);">${faDigits(weekQStreak)}</div><div class="l">استریک</div></div></div></div>
+    ${await continuityReportCard()}
+    <div class="card">
+      <h3>سهم هر فعالیت از کل هفته</h3>
+      ${items.length ? legendHTML(items) : `<div class="muted">داده‌ای ثبت نشده</div>`}
+      <div class="insight" style="margin-top:10px;">${compareLine ? compareLine+'<br><br>' : ''}${weeklyInsight(totalStudy, totalWaste, perDay)}<br><br>${progressSuggestion(totalStudy, weekGoalMin, end, 'هفتگی')}</div>
+    </div>`;
+
+  document.getElementById('prevWeek').onclick = ()=>{ App.reportWeekAnchor = addDays(App.reportWeekAnchor,-7); renderReport(); };
+  document.getElementById('nextWeek').onclick = ()=>{ App.reportWeekAnchor = addDays(App.reportWeekAnchor,7); renderReport(); };
+  document.getElementById('jumpThisWeek').onclick = ()=>{ App.reportWeekAnchor = new Date(); renderReport(); };
+}
+function weeklyInsight(totalStudy, totalWaste, perDay){
+  const vals = perDay.map(d=>(d.byAct['study']||0)/60);
+  const best = Math.max(...vals), bestIdx = vals.indexOf(best);
+  let msg = `مجموع مطالعه این هفته <b>${hm(totalStudy)}</b> ساعت بود.`;
+  if (best>0){
+    const dt = new Date(perDay[bestIdx].date);
+    msg += ` بیشترین مطالعه در روز «${JWEEK[dt.getDay()]}» با ${faDigits(best.toFixed(1))} ساعت ثبت شده.`;
+  }
+  if (totalWaste>0) msg += ` مجموع زمان تلف‌شده هفته: ${hm(totalWaste)} ساعت.`;
+  return addressPrefix() + msg;
+}
+
+async function renderMonthlyReport(body){
+  body.innerHTML = `<div class="card"><div class="muted">در حال محاسبه...</div></div>`;
+  const {start, end} = jalaliMonthRange(App.reportMonthJY, App.reportMonthJM);
+  const days = await loadDaysBetween(start, end);
+  const perDay = days.map(d=>({date:d.date, byAct: summarize(d.grid)}));
+  const totalStudy = perDay.reduce((s,d)=>s+(d.byAct['study']||0),0);
+  const byActTotals = {};
+  perDay.forEach(d=>Object.entries(d.byAct).forEach(([k,v])=>byActTotals[k]=(byActTotals[k]||0)+v));
+  const items = App.activities.map(a=>({name:a.name,color:a.color,value:byActTotals[a.id]||0})).filter(i=>i.value>0);
+
+  // heatmap by study minutes, aligned to a real Jalali calendar month
+  const maxStudy = Math.max(...perDay.map(d=>d.byAct['study']||0), 60);
+  const firstDow = start.getDay(); // 0=Sun
+  let heatCells = '';
+  ['ی','د','س','چ','پ','ج','ش'].forEach(h=> heatCells += `<div class="hd">${h}</div>`);
+  for (let i=0;i<firstDow;i++) heatCells += `<div class="cell empty"></div>`;
+  perDay.forEach(d=>{
+    const v = d.byAct['study']||0;
+    const alpha = v ? (0.18 + 0.72*Math.min(1, v/maxStudy)) : 0;
+    const dt = new Date(d.date);
+    const [,,jd] = g2j(dt.getFullYear(), dt.getMonth()+1, dt.getDate());
+    heatCells += `<div class="cell" style="background:rgba(43,92,107,${alpha.toFixed(2)}); color:${alpha>0.5?'#fff':'var(--ink-soft)'};">${faDigits(jd)}</div>`;
+  });
+
+  // weekly totals within month (buckets of 7 days, Saturday-aligned)
+  const weekBuckets = [];
+  for (let i=0; i<perDay.length; i+=7){
+    const slice = perDay.slice(i, i+7);
+    weekBuckets.push(slice.reduce((s,d)=>s+(d.byAct['study']||0),0)/60);
+  }
+  const weekSeries = weekBuckets.map(y=>({y}));
+
+  const monthGoalMin = (App.goals.monthlyHours||0)*60;
+  const mPct = monthGoalMin ? Math.min(100, Math.round(totalStudy/monthGoalMin*100)) : 0;
+  const monthQuestions=await questionDaysBetween(start,end), monthQTotal=monthQuestions.reduce((a,d)=>a+d.total,0), monthQDays=monthQuestions.filter(d=>d.total>=getQuestionTarget()).length, monthQAvg=monthQTotal/Math.max(1,monthQuestions.length), monthQStreak=await computeQuestionStreak();
+
+  let overallCard = '';
+  if (App.goals.totalHours>0){
+    const allTime = await allTimeStudyMinutes();
+    const totalGoalMin = App.goals.totalHours*60;
+    const tPct = Math.min(100, Math.round(allTime/totalGoalMin*100));
+    let daysLeftTxt = '';
+    if (App.goals.deadline){
+      const today0 = new Date(); today0.setHours(0,0,0,0);
+      const dl0 = localDateFromYmd(App.goals.deadline); dl0.setHours(0,0,0,0);
+      const daysLeft = Math.max(0, Math.round((dl0-today0)/86400000));
+      const remainingMin = Math.max(0, totalGoalMin-allTime);
+      const neededPerDay = daysLeft>0 ? (remainingMin/daysLeft/60) : 0;
+      daysLeftTxt = daysLeft>0
+        ? `برای رسیدن به هدف کلی تا ددلاین، باید روزی حدود <b>${faDigits(neededPerDay.toFixed(1))}</b> ساعت مطالعه کنی.`
+        : `ددلاین هدف کلی رسیده — وقتشه یه جمع‌بندی کنی.`;
+    }
+    overallCard = `
+    <div class="card" style="border-right:3px solid var(--ink);">
+      <h3>پیشرفت نسبت به هدف کلی (${g_esc(App.goals.title)})</h3>
+      <div class="barbg" style="height:10px;"><div class="barfg" style="width:${tPct}%;background:var(--ink);"></div></div>
+      <div class="muted mono" style="font-size:11px;margin-top:5px;">${hm(allTime)} از ${faDigits(App.goals.totalHours)} ساعت</div>
+      <div class="insight" style="margin-top:10px;">${daysLeftTxt || 'برای دیدن تحلیل، ددلاین هدف کلی را در تب «هدف» تنظیم کن.'}</div>
+    </div>`;
+  }
+
+  body.innerHTML = navHTML('prevMonth','nextMonth','jumpThisMonth','ماه جاری', `${JMONTHS[App.reportMonthJM-1]} ${faDigits(App.reportMonthJY)}`, 'ماه شمسی') + `
+    <div class="card">
+      <h3>نقشه حرارتی مطالعه</h3>
+      <div class="heat">${heatCells}</div>
+      <div class="muted" style="font-size:10.5px;margin-top:8px;">هرچه رنگ پررنگ‌تر، مطالعه بیشتر آن روز</div>
+    </div>
+    <div class="card" style="border-right:3px solid var(--accent);">
+      <h3>روند هفتگی مطالعه در این ماه</h3>
+      ${svgLine(weekSeries, 320, 100, 'var(--accent)')}
+      <div class="mono" style="font-size:18px;font-weight:700;margin-top:8px;">${hm(totalStudy)}</div>
+      <div class="muted" style="font-size:12px;">مجموع مطالعه این ماه</div>
+    </div>
+    <div class="card" style="border-right:3px solid #6B7A3D;">
+      <h3>پیشرفت نسبت به هدف ماهانه</h3>
+      <div class="barbg" style="height:10px;"><div class="barfg" style="width:${mPct}%;background:#6B7A3D;"></div></div>
+      <div class="muted mono" style="font-size:11px;margin-top:5px;">${hm(totalStudy)} از ${faDigits(App.goals.monthlyHours)} ساعت</div>
+      <div class="insight" style="margin-top:10px;">${progressSuggestion(totalStudy, monthGoalMin, end, 'ماهانه')}</div>
+    </div>
+    ${overallCard}
+    <div class="card" style="border-right:3px solid var(--amber);"><h3>گزارش تعداد سوال و تست زده شده</h3><div class="statgrid"><div class="stat"><div class="v">${faDigits(monthQTotal)}</div><div class="l">کل تست</div></div><div class="stat"><div class="v">${faDigits(Math.round(monthQAvg))}</div><div class="l">میانگین روزانه</div></div><div class="stat"><div class="v" style="color:#4F8A58;">${faDigits(monthQDays)}</div><div class="l">روزهای ${faDigits(getQuestionTarget())}+</div></div><div class="stat"><div class="v" style="color:var(--amber);">${faDigits(monthQStreak)}</div><div class="l">استریک</div></div></div></div>
+    ${await continuityReportCard()}
+    <div class="card">
+      <h3>سهم فعالیت‌ها از کل ماه</h3>
+      ${items.length ? legendHTML(items) : `<div class="muted">داده‌ای ثبت نشده</div>`}
+      <div class="insight" style="margin-top:10px;">${monthlyInsight(totalStudy, weekBuckets, perDay.length)}</div>
+    </div>`;
+
+  document.getElementById('prevMonth').onclick = ()=>{
+    App.reportMonthJM--; if (App.reportMonthJM<1){ App.reportMonthJM=12; App.reportMonthJY--; }
+    renderReport();
+  };
+  document.getElementById('nextMonth').onclick = ()=>{
+    App.reportMonthJM++; if (App.reportMonthJM>12){ App.reportMonthJM=1; App.reportMonthJY++; }
+    renderReport();
+  };
+  document.getElementById('jumpThisMonth').onclick = ()=>{
+    const todayJ = g2j(new Date().getFullYear(), new Date().getMonth()+1, new Date().getDate());
+    App.reportMonthJY = todayJ[0]; App.reportMonthJM = todayJ[1];
+    renderReport();
+  };
+}
+function g_esc(s){ return (s||'').replace(/</g,'&lt;'); }
+function monthlyInsight(totalStudy, weekBuckets, dayCount){
+  const avgPerDay = totalStudy/Math.max(1,dayCount);
+  let msg = `میانگین مطالعه روزانه در این ماه <b>${hm(avgPerDay)}</b> ساعت بوده.`;
+  if (weekBuckets.length>=2){
+    const last = weekBuckets[weekBuckets.length-1], prev = weekBuckets[weekBuckets.length-2];
+    if (last>prev) msg += ` روند هفته‌ی اخیر نسبت به هفته‌ی قبل <b>صعودی</b> است 👍`;
+    else if (last<prev) msg += ` روند هفته‌ی اخیر نسبت به هفته‌ی قبل <b>نزولی</b> است — مراقب باش.`;
+  }
+  return addressPrefix() + msg;
+}
+
+/* ---------------- goals ---------------- */
+async function monthToDateStudyMinutes(){
+  const today = new Date();
+  const [jy,jm] = g2j(today.getFullYear(), today.getMonth()+1, today.getDate());
+  const [gy,gm,gd] = j2g(jy,jm,1);
+  const start = new Date(gy,gm-1,gd); start.setHours(0,0,0,0);
+  const dayCount = Math.max(1, Math.round((today-start)/86400000)+1);
+  const days = await loadDaysRange(today, dayCount);
+  return days.reduce((s,d)=>s+d.grid.filter(v=>v==='study').length*15,0);
+}
+async function allTimeStudyMinutes(){
+  const dayKeys = await listKeysWithPrefix('day:');
+  let total = 0;
+  for (const k of dayKeys){ const v = await storeGet(k); if (v) total += v.filter(x=>x==='study').length*15; }
+  return total;
+}
+/* ---------------- daily MedFast question checklist ---------------- */
+async function dailyStudyMinutes(date){
+  const grid=await storeGet('day:'+ymd(date));
+  return grid ? grid.filter(v=>v==='study').length*15 : 0;
+}
+async function computeStudyContinuity(){
+  const minRequired=Math.max(1,Number(App.settings?.continuityMinHours)||3)*60;
+  const c=_continuityCache;
+  if(c && c.v===StreakCacheVersion.count && c.minRequired===minRequired) return c.result;
+  let streak=0,d=new Date(); d.setHours(0,0,0,0);
+  for(let i=0;i<400;i++){
+    const mins=await dailyStudyMinutes(d);
+    if(mins>=minRequired){streak++;d=addDays(d,-1);}else break;
+  }
+  const result={streak,minRequired};
+  _continuityCache={v:StreakCacheVersion.count, minRequired, result};
+  return result;
+}
+let _continuityCache=null;
+async function dailyQuestionTotal(date){const q=await storeGet('questions:'+ymd(date));return Math.max(0,parseInt(q||'0',10)||0);}
+async function questionDaysBetween(start,end){const out=[];let d=new Date(start);while(d<=end){out.push({date:ymd(d),total:await dailyQuestionTotal(d)});d=addDays(d,1);}return out;}
+async function dailyQuestionTrend(days){const end=new Date(),out=[];for(let i=days-1;i>=0;i--){const d=addDays(end,-i);out.push({date:ymd(d),total:await dailyQuestionTotal(d)});}return out;}
+async function computeQuestionStreak(){
+  const target=getQuestionTarget();
+  const c=_questionStreakCache;
+  if(c && c.v===StreakCacheVersion.count && c.target===target) return c.result;
+  let streak=0,d=new Date();
+  for(let i=0;i<400;i++){if(await dailyQuestionTotal(d)>=target){streak++;d=addDays(d,-1);}else break;}
+  _questionStreakCache={v:StreakCacheVersion.count, target, result:streak};
+  return streak;
+}
+let _questionStreakCache=null;
+async function studyDayDone(date){const g=await storeGet('day:'+ymd(date));return Array.isArray(g)&&g.some(v=>v==='study');}
+async function computeStudyStreak(){
+  const c=_studyStreakCache;
+  if(c && c.v===StreakCacheVersion.count) return c.result;
+  let streak=0,d=new Date();if(!(await studyDayDone(d)))d=addDays(d,-1);for(let i=0;i<400;i++){if(await studyDayDone(d)){streak++;d=addDays(d,-1);}else break;}
+  _studyStreakCache={v:StreakCacheVersion.count, result:streak};
+  return streak;
+}
+let _studyStreakCache=null;
+async function computeStreak(){ return computeStudyStreak(); }
+
+async function bestHourAnalysis(){
+  const c=_bestHourCache;
+  if(c && c.v===StreakCacheVersion.count) return c.result;
+  const dayKeys = await listKeysWithPrefix('day:');
+  const buckets = new Array(24).fill(0);
+  for (const k of dayKeys){
+    const grid = await storeGet(k);
+    if (!grid) continue;
+    grid.forEach((v,idx)=>{ if (v==='study') buckets[Math.floor(idx/4)] += 15; });
+  }
+  const max = Math.max(...buckets);
+  let bestStart = 0;
+  if (max>0){
+    // find the best contiguous 2-hour window
+    let bestSum=-1;
+    for (let h=0; h<24; h++){
+      const sum = buckets[h] + buckets[(h+1)%24];
+      if (sum>bestSum){ bestSum=sum; bestStart=h; }
+    }
+  }
+  const result = {buckets, max, bestStart};
+  _bestHourCache = {v:StreakCacheVersion.count, result};
+  return result;
+}
+let _bestHourCache=null;
+async function renderGoalsView(){
+  const g = App.goals;
+  const continuity = await computeStudyContinuity();
+  const sNum = document.getElementById('streakNum'); if (sNum) sNum.textContent = faDigits(continuity.streak);
+  const sStat = document.getElementById('statStreak'); if (sStat) sStat.textContent = faDigits(continuity.streak);
+  const todayQ = await dailyQuestionTotal(App.viewDate);
+  const tqEl = document.getElementById('todayQuestionsText');
+  if (tqEl) tqEl.textContent = `حداقل ${faDigits(continuity.minRequired/60)} ساعت در روز · امروز ${faDigits(todayQ)} تست`; 
+  document.getElementById('goalTitleShow').textContent = g.title || 'هدف کلی';
+  document.getElementById('goalTitle').value = g.title || '';
+  const monthSel = document.getElementById('goalDateMonth');
+  if (!monthSel.options.length){
+    monthSel.innerHTML = JMONTHS.map((m,i)=>`<option value="${i+1}">${m}</option>`).join('');
+  }
+  if (g.deadline){
+    const dl = localDateFromYmd(g.deadline);
+    const [jy,jm,jd] = g2j(dl.getFullYear(), dl.getMonth()+1, dl.getDate());
+    document.getElementById('goalDateDay').value = jd;
+    monthSel.value = jm;
+    document.getElementById('goalDateYear').value = jy;
+  }
+  document.getElementById('goalTotal').value = g.totalHours || '';
+  document.getElementById('goalDaily').value = g.dailyHours;
+  document.getElementById('goalWeekly').value = g.weeklyHours;
+  document.getElementById('goalMonthly').value = g.monthlyHours;
+
+  if (g.deadline){
+    const today = new Date(); today.setHours(0,0,0,0);
+    const dl = localDateFromYmd(g.deadline); dl.setHours(0,0,0,0);
+    const diffDays = Math.round((dl-today)/86400000);
+    document.getElementById('goalDaysLeft').textContent = diffDays>=0 ? faDigits(diffDays) : '۰';
+    const [jy,jm,jd] = g2j(dl.getFullYear(), dl.getMonth()+1, dl.getDate());
+    document.getElementById('goalDeadlineLabel').textContent =
+      (diffDays>=0 ? 'روز باقی‌مانده تا ' : 'گذشته از ') + `${faDigits(jd)} ${JMONTHS[jm-1]} ${faDigits(jy)}`;
+  }
+
+  const studyMin = App.todayGrid.filter(v=>v==='study').length*15;
+  const dailyGoalMin = (g.dailyHours||0)*60;
+  const dPct = dailyGoalMin ? Math.min(100, Math.round(studyMin/dailyGoalMin*100)) : 0;
+  document.getElementById('goalDailyBar').style.width = dPct+'%';
+  document.getElementById('goalDailyText').textContent = `${hm(studyMin)} از ${faDigits(g.dailyHours)} ساعت`;
+
+  const days = await loadDaysRange(new Date(), 7);
+  const weekStudy = days.reduce((s,d)=>s+((d.grid.filter(v=>v==='study').length)*15),0);
+  const weeklyGoalMin = (g.weeklyHours||0)*60;
+  const wPct = weeklyGoalMin ? Math.min(100, Math.round(weekStudy/weeklyGoalMin*100)) : 0;
+  document.getElementById('goalWeeklyBar').style.width = wPct+'%';
+  document.getElementById('goalWeeklyText').textContent = `${hm(weekStudy)} از ${faDigits(g.weeklyHours)} ساعت`;
+
+  const monthStudy = await monthToDateStudyMinutes();
+  const monthlyGoalMin = (g.monthlyHours||0)*60;
+  const mPct = monthlyGoalMin ? Math.min(100, Math.round(monthStudy/monthlyGoalMin*100)) : 0;
+  document.getElementById('goalMonthlyBar').style.width = mPct+'%';
+  document.getElementById('goalMonthlyText').textContent = `${hm(monthStudy)} از ${faDigits(g.monthlyHours)} ساعت`;
+
+  if (g.totalHours>0){
+    const totalStudy = await allTimeStudyMinutes();
+    const totalGoalMin = g.totalHours*60;
+    const tPct = Math.min(100, Math.round(totalStudy/totalGoalMin*100));
+    document.getElementById('goalTotalBar').style.width = tPct+'%';
+    document.getElementById('goalTotalText').textContent = `${hm(totalStudy)} از ${faDigits(g.totalHours)} ساعت`;
+    const sugEl = document.getElementById('goalTotalSuggestion');
+    if (g.deadline){
+      sugEl.style.display = 'block';
+      sugEl.innerHTML = progressSuggestion(totalStudy, totalGoalMin, localDateFromYmd(g.deadline), 'کلی');
+    } else {
+      sugEl.style.display = 'none';
+    }
+  } else {
+    document.getElementById('goalTotalBar').style.width = '0%';
+    document.getElementById('goalTotalText').textContent = 'هدف کلی تنظیم نشده (اختیاری)';
+    document.getElementById('goalTotalSuggestion').style.display = 'none';
+  }
+}
+async function saveGoal(){
+  const jd = parseInt(document.getElementById('goalDateDay').value, 10);
+  const jm = parseInt(document.getElementById('goalDateMonth').value, 10);
+  const jy = parseInt(document.getElementById('goalDateYear').value, 10);
+  let deadlineISO = App.goals.deadline;
+  if (jd && jm && jy){
+    const [gy,gm,gd] = j2g(jy, jm, jd);
+    deadlineISO = ymd(new Date(gy, gm-1, gd));
+  }
+  App.goals = {
+    title: document.getElementById('goalTitle').value.trim() || 'هدف کلی',
+    deadline: deadlineISO,
+    totalHours: parseFloat(document.getElementById('goalTotal').value)||0,
+    dailyHours: parseFloat(document.getElementById('goalDaily').value)||0,
+    weeklyHours: parseFloat(document.getElementById('goalWeekly').value)||0,
+    monthlyHours: parseFloat(document.getElementById('goalMonthly').value)||0,
+    linkedActivity: 'study'
+  };
+  await storeSet('goals', App.goals);
+  renderGoalsView();
+}
+
+/* ---------------- backup / restore ---------------- */
+async function buildBackupData(){
+  const data = {exportedAt: new Date().toISOString(), appVersion: APP_VERSION, dataVersion: DATA_SCHEMA_VERSION,
+                activities: App.activities, goals: App.goals,
+                subjects: App.subjects, weeklyPlans: App.weeklyPlans, settings: App.settings,
+                days:{}, sessions:{}, questions:{}, dayMeta:{}};
+  const dayKeys = await listKeysWithPrefix('day:');
+  for (const k of dayKeys){ const v = await storeGet(k); if (v) data.days[k]=v; }
+  const sessionKeys = await listKeysWithPrefix('sessions:');
+  for (const k of sessionKeys){ const v = await storeGet(k); if (v) data.sessions[k]=v; }
+  const questionKeys=await listKeysWithPrefix('questions:'); for(const k of questionKeys){const v=await storeGet(k);if(v!==null)data.questions[k]=v;}
+  const dayMetaKeys=await listKeysWithPrefix('daymeta:'); for(const k of dayMetaKeys){const v=await storeGet(k);if(v!==null)data.dayMeta[k]=v;}
+  return data;
+}
+async function exportBackup(){
+  const data = await buildBackupData();
+  const blob = new Blob([JSON.stringify(data)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'study-tracker-backup-'+ymd(new Date())+'.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 2000);
+  App.settings.lastBackupAt = new Date().toISOString();
+  await storeSet('settings', App.settings);
+  renderBackupSettings();
+}
+
+async function importBackupFile(file){
+  try{
+    const text = await file.text();
+    const data = JSON.parse(text);
+    // A backup made by a *future* build (dataVersion higher than this
+    // build understands) may use a data shape this code doesn't know
+    // how to read yet — importing it blindly could silently corrupt
+    // fields. Refuse and tell the user to update the app first, rather
+    // than guessing.
+    if (typeof data.dataVersion === 'number' && data.dataVersion > DATA_SCHEMA_VERSION){
+      setSaveStatus('⚠ این فایل پشتیبان مال نسخه‌ی جدیدتری از برنامه‌ست — اول برنامه رو آپدیت کن');
+      return;
+    }
+    if (data.activities && data.activities.length){ App.activities = data.activities; await storeSet('activities', App.activities); }
+    if (data.goals){ App.goals = data.goals; await storeSet('goals', App.goals); }
+    if (data.subjects){ App.subjects = data.subjects; await storeSet('subjects', App.subjects); }
+    if (data.weeklyPlans){ App.weeklyPlans = data.weeklyPlans; await storeSet('weeklyPlans', App.weeklyPlans); }
+    if (data.settings){ App.settings = Object.assign(defaultSettings(), data.settings); await storeSet('settings', App.settings); }
+    if (data.days){ for (const [k,v] of Object.entries(data.days)){ await storeSet(k, v); } }
+    if (data.sessions){ for (const [k,v] of Object.entries(data.sessions)){ await storeSet(k, v); } }
+    if(data.questions){for(const [k,v] of Object.entries(data.questions)){await storeSet(k,v);}}
+    if(data.dayMeta){for(const [k,v] of Object.entries(data.dayMeta)){await storeSet(k,v);}}
+    // bring the restored data up to this build's current schema too
+    await storeSet('dataVersion', typeof data.dataVersion==='number' ? data.dataVersion : 0);
+    await runMigrations();
+    await loadDayIntoState(App.viewDate);
+    renderAll();
+    renderBackupSettings();
+    setSaveStatus('بازیابی از پشتیبان انجام شد ✓');
+  } catch(e){ setSaveStatus('⚠ فایل پشتیبان خوانده نشد'); }
+}
+
+/* ---------------- clock ---------------- */
+function tickClock(){
+  const n = new Date();
+  document.getElementById('topClock').textContent = faDigits(pad2(n.getHours()))+':'+faDigits(pad2(n.getMinutes()));
+}
+
+function wireEvents(){
+  // Registered once here (not inside renderGrid, which runs on every day
+  // change / quick log / etc.) so the app doesn't accumulate duplicate
+  // document-level listeners over a session.
+  document.addEventListener('pointerup', onGridPointerUp);
+  document.addEventListener('pointercancel', onGridPointerUp);
+
+  document.getElementById('btnGridUndo').onclick = undoGrid;
+  document.getElementById('btnGridRedo').onclick = redoGrid;
+
+  document.querySelectorAll('nav.tabbar button').forEach(btn=>{
+    btn.onclick = ()=>{
+      document.querySelectorAll('nav.tabbar button').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+      document.getElementById('view-'+btn.dataset.tab).classList.add('active');
+      if (btn.dataset.tab==='reports') renderReport();
+      if (btn.dataset.tab==='goals'){ renderGoalsView(); renderQuestionTargetSetting(); }
+      if (btn.dataset.tab==='settings'){ renderThemeSettings(); renderUserNameSettings(); renderBackupSettings(); }
+      if (btn.dataset.tab==='planning'){ renderSubjectsList(); renderWeeklyPlanList(); }
+      hideModal();
+    };
+  });
+
+  document.getElementById('prevDay').onclick = async ()=>{ App.viewDate=addDays(App.viewDate,-1); await loadDayIntoState(App.viewDate); renderDateNav(); renderGrid(); renderStats(); renderDailyQuestions(); renderDailyNote(); renderQuickLogSelectors(); renderPlanBanner(); };
+  document.getElementById('nextDay').onclick = async ()=>{ App.viewDate=addDays(App.viewDate,1); await loadDayIntoState(App.viewDate); renderDateNav(); renderGrid(); renderStats(); renderDailyQuestions(); renderDailyNote(); renderQuickLogSelectors(); renderPlanBanner(); };
+  document.getElementById('jumpToday').onclick = async ()=>{ App.viewDate=new Date(); await loadDayIntoState(App.viewDate); renderDateNav(); renderGrid(); renderStats(); renderDailyQuestions(); renderDailyNote(); renderQuickLogSelectors(); renderPlanBanner(); };
+  document.getElementById('btnJumpDate').onclick = openDateJump;
+
+  const lockToggle = document.getElementById('lockToggle');
+  lockToggle.onclick = ()=>{
+    App.gridLocked = !App.gridLocked;
+    lockToggle.classList.toggle('on', App.gridLocked);
+    document.getElementById('dayGrid').classList.toggle('locked', App.gridLocked);
+    document.getElementById('lockStatusText').textContent = App.gridLocked
+      ? 'قفل است — لمس جدول اثری نداره' : 'جدول باز است، لمس می‌تونه رنگ‌ها رو تغییر بده';
+  };
+
+  armConfirm(document.getElementById('btnClearToday'), 'پاک‌کردن همه‌ی امروز', 'مطمئنی؟ دوباره بزن', clearToday);
+  armConfirm(document.getElementById('btnResetAll'), 'ریست کامل برنامه', 'مطمئنی؟ همه‌چیز پاک می‌شه — دوباره بزن', resetAllData);
+
+  document.getElementById('btnStart').onclick=startTimer;
+  document.getElementById('btnPause').onclick=pauseTimer;
+  document.getElementById('btnStop').onclick=stopTimer;
+  document.getElementById('btnCancelStop').onclick=undoLastAutoLog;
+  document.getElementById('btnCountdownStart').onclick=startCountdown;
+  document.getElementById('btnCountdownPause').onclick=pauseCountdown;
+  document.getElementById('btnCountdownStop').onclick=stopCountdown;
+  document.getElementById('btnCancelPendingCountdown').onclick=undoLastAutoLog;
+
+  document.getElementById('btnQuickLog').onclick = quickLog;
+  document.getElementById('btnUndoQuickLog').onclick = undoLastAutoLog;
+  document.getElementById('clearDailyQuestions').onclick = clearDailyQuestions;
+  document.getElementById('dailyQuestionSave').onclick = saveDailyQuestionCount;
+  document.getElementById('dailyNoteSave').onclick = saveDailyNote;
+  document.getElementById('dailyQuestionInput').addEventListener('keydown', e=>{ if(e.key==='Enter') saveDailyQuestionCount(); });
+
+  document.getElementById('btnAddAct').onclick = addActivity;
+  document.getElementById('btnAddSubject').onclick = addSubject;
+  document.getElementById('btnWeekCalendar').onclick = openWeekCalendar;
+  document.getElementById('modalOverlay').onclick = (e)=>{ if(e.target.id==='modalOverlay') hideModal(); };
+
+  document.getElementById('btnSaveGoal').onclick = saveGoal;
+
+  document.getElementById('btnSaveContinuity').onclick = async ()=>{
+    const raw=(document.getElementById('continuityMinHours').value||'').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+    const v=Math.max(0.25,Math.min(24,Number(raw)||3));
+    App.settings.continuityMinHours=v; await storeSet('settings',App.settings);
+    document.getElementById('continuitySettingStatus').textContent=`حداقل استمرار روی ${faDigits(v)} ساعت تنظیم شد ✓`;
+    renderReport();
+  };
+
+  document.getElementById('btnSaveQuestionTarget').onclick = async ()=>{
+    const raw=(document.getElementById('questionTargetInput').value||'').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+    const v=Math.max(1,Math.round(Number(raw)||DEFAULT_QUESTION_TARGET));
+    App.settings.dailyQuestionTarget=v; await storeSet('settings',App.settings);
+    document.getElementById('questionTargetInput').value=v;
+    document.getElementById('questionTargetStatus').textContent=`حداقل استمرار سوالات روی ${faDigits(v)} تست تنظیم شد ✓`;
+    renderDailyQuestions(); renderStats(); renderReport();
+  };
+
+  const darkToggle = document.getElementById('darkModeToggle');
+  darkToggle.onclick = async ()=>{
+    App.settings.darkMode = !App.settings.darkMode;
+    applyTheme();
+    await storeSet('settings', App.settings);
+  };
+
+  document.getElementById('userFullName').onchange = async (e)=>{
+    App.settings.fullName = e.target.value.trim();
+    await storeSet('settings', App.settings);
+    renderReport();
+  };
+
+  document.getElementById('btnExport').onclick = exportBackup;
+  armConfirm(document.getElementById('btnImport'), 'بازیابی از فایل پشتیبان', 'مطمئنی؟ اطلاعات فعلی جایگزین می‌شه — دوباره بزن',
+    async ()=> document.getElementById('importFile').click());
+  document.getElementById('importFile').onchange = (e)=>{
+    const file = e.target.files[0];
+    if (file) importBackupFile(file);
+    e.target.value = '';
+  };
+
+  document.querySelectorAll('.subtabs button').forEach(b=>{
+    b.onclick = ()=>{ App.reportTab=b.dataset.r; renderReport(); };
+  });
+}
+
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){timerTick();updateCountdown();}});
+window.addEventListener('pageshow',()=>{timerTick();updateCountdown();});
+
+init();
+if ('serviceWorker' in navigator && (location.protocol==='https:' || location.hostname==='localhost')){
+  window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
+}
+})();
+</script>
+</body>
+</html>
